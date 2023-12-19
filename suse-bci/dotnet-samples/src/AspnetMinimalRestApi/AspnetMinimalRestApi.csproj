@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>SuseBci.DotnetSamples.AspnetMinimalRestApi</AssemblyName>
+    <RootNamespace>SuseBci.DotnetSamples.AspnetMinimalRestApi</RootNamespace>
+    <ProjectGuid>{B8CF3A4F-E02B-41A5-97E9-0152378561A1}</ProjectGuid>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.14" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>
