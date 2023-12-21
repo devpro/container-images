@@ -2,23 +2,27 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-// add services to the build collection
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// configures the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue<bool>("Application:IsSwaggerEnabled"))
 {
+    app.Logger.LogInformation("Swagger enabled");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (builder.Configuration.GetValue<bool>("Application:IsHttpsRedirectionEnabled"))
+{
+    app.Logger.LogInformation("HTTPS redirection enabled");
+    app.UseHttpsRedirection();
+}
 
 app.MapGet("/weather-forecasts", () =>
 {
+    app.Logger.LogInformation("GetWeatherForecast request received");
     var forecast = Enumerable.Range(1, 5)
         .Select(index => new WeatherForecastDto(index, Random.Shared))
         .ToArray();
