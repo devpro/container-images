@@ -32,8 +32,8 @@ Logging__LogLevel__SuseBci=Debug
 
 ### ASP.NET minimal REST API
 
-Create an image with `docker build --no-cache . -t susebciaspnetminapi -f src/AspnetMinimalRestApi/Dockerfile`.
+Create an image with `docker build --no-cache . -t aspnetminapi -f src/AspnetMinimalRestApi/Dockerfile`.
 
-Run the image with `docker run -it --rm -p 9002:80 --env-file .env susebciaspnetminapi`.
+Run the image with `docker run -it --rm -p 9002:80 --env-file .env aspnetminapi`.
 
 Open [localhost:9002/swagger](http://localhost:9002/swagger) in a browser.
