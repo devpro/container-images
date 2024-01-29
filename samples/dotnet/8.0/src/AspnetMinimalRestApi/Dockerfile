@@ -1,5 +1,6 @@
 FROM registry.suse.com/bci/dotnet-aspnet:8.0 AS base
-#USER app
+RUN useradd -m -s /bin/bash app
+USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
