@@ -6,7 +6,7 @@ Container image definitions to provide examples & best pratices, and push images
 
 ### Applications
 
-* [.NET 7.0](samples/dotnet/7.0/README.md)
+* .NET: [7.0](samples/dotnet/7.0/README.md), [8.0](samples/dotnet/8.0/README.md)
 
 ### Systems
 
