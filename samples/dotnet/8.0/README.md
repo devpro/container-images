@@ -22,9 +22,8 @@ Set the environments variables by creating an `.env` file:
 Application__IsHttpsRedirectionEnabled=false
 Application__IsSwaggerEnabled=true
 ASPNETCORE_ENVIRONMENT=Development
-ASPNETCORE_URLS=http://[::]:8080
 Logging__LogLevel__Default=Debug
-Logging__LogLevel__Microsoft__AspNetCore=Debug
+Logging__LogLevel__Microsoft.AspNetCore=Debug
 Logging__LogLevel__SuseBci=Debug
 ```
 
