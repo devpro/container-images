@@ -1,5 +1,4 @@
-FROM registry.suse.com/bci/dotnet-aspnet:8.0 AS base
-RUN useradd -m -s /bin/bash app
+FROM registry.suse.com/bci/dotnet-aspnet:8.0.2 AS base
 USER app
 WORKDIR /app
 EXPOSE 8080
@@ -12,11 +11,11 @@ COPY ["src/", "./"]
 RUN dotnet restore "AspnetMinimalRestApi/AspnetMinimalRestApi.csproj"
 COPY . .
 WORKDIR "/src/AspnetMinimalRestApi"
-RUN dotnet build "AspnetMinimalRestApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "AspnetMinimalRestApi.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "AspnetMinimalRestApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "AspnetMinimalRestApi.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
