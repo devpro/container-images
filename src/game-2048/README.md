@@ -4,7 +4,7 @@
 
 💡 This is a hard fork of [gabrielecirulli/2048](https://github.com/gabrielecirulli/2048) which hasn't been updated since 2017.
 
-This is the source code of [devprofr/game-2048](https://hub.docker.com/r/devprofr/game-2048) container image.
+This is the source code of 2048 game application.
 
 ## How to edit
 
