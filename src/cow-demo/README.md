@@ -1,6 +1,8 @@
 # Cow Demo Application
 
-Hard fork of [oskapt/rancher-demo](https://github.com/oskapt/rancher-demo) who hasn't been updated since 2021.
+[![Docker Image Version](https://img.shields.io/docker/v/devprofr/cow-demo?label=Docker)](https://hub.docker.com/r/devprofr/cow-demo)
+
+💡 This is a hard fork of [oskapt/rancher-demo](https://github.com/oskapt/rancher-demo) who hasn't been updated since 2021.
 
 This is a Go demo application used for demonstrating Kubernetes and load balancing.
 
@@ -51,12 +53,14 @@ go build
 Start the web server:
 
 ````bash
-./cow-demo
+COW_COLOR=purple ./cow-demo
 ````
 
 Open [localhost:8080](http://localhost:8080)
 
 ### How to run in a container
+
+The container image is using [SUSE BCI (Base Container Images)](https://registry.suse.com/).
 
 Build a local image:
 
@@ -67,7 +71,7 @@ docker build -t devprofr/cow-demo .
 Start a container:
 
 ```bash
-docker run --rm -p 8080:8080 devprofr/cow-demo
+docker run --rm -p 8080:8080 -e COW_COLOR:purple devprofr/cow-demo
 ```
 
 Open [localhost:8080](http://localhost:8080)
@@ -79,13 +83,7 @@ By default the loaded page will reach back to `/demo` every `REFRESH_INTERVAL` a
 - `/info` - returns some additional information about the replica serving the request
 - `/load` - adds a 2s delay to the response from `/info` - use this for putting artificial load on the system and watching the replicas scale
 
-## Ports
+## Backlog
 
-The container will listen for traffic on port 8080.
-
-## Running
-
-1. Edit `base/configs/source-vars.yaml` and set the following:
-    - `MY_NAMESPACE`: the namespace into which the app will be deployed (default: `rancher-demo`). This will be created if it does not already exist.
-    - `URL_HOST`: the hostname portion of the URL that the ingress will answer on (default: `rancher-demo.home.monach.us`)
-2. Run `kubectl apply -k base` to deploy the application.
+* Upgrade [urfave/cli](https://cli.urfave.org/) to v2
+* Upgrade [semantic-ui](https://semantic-ui.com/) ("2.2.13") to 2.4

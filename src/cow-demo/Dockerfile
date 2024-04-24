@@ -1,15 +1,11 @@
-FROM golang:1.12-alpine as app
-RUN apk add -U build-base git
+FROM registry.suse.com/bci/golang:1.22 as build
 COPY . /go/src
 WORKDIR /go/src
-ENV GO111MODULE=on
 RUN go build
 
-FROM alpine:latest
-RUN apk add -U --no-cache curl
+FROM registry.suse.com/bci/bci-minimal:15.5 as run
 COPY ./static /static
-COPY --from=app /go/src/cow-demo /bin/cow-demo
 COPY ./templates /templates
-ENV COW_COLOR yellow
+COPY --from=build /go/src/cow-demo /bin/cow-demo
 EXPOSE 8080
 ENTRYPOINT ["/bin/cow-demo"]

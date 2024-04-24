@@ -21,14 +21,19 @@ jobs:
         run: |
           cd src/game-2048
           docker build . --tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
+          cd ../cow-demo
+          docker build . --tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
       - name: Push image to container registry
         run: |
           docker push $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
+          docker push $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
       - name: Push latest tag to container registry
         if: ${{ github.ref_name == 'main' }}
         run: |
           docker tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/game-2048:latest
           docker push $IMAGE_FOLDER/game-2048:latest
+          docker tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/cow-demo:latest
+          docker push $IMAGE_FOLDER/cow-demo:latest
     env:
       CONTAINER_REGITRY_DOMAIN: docker.io
       IMAGE_FOLDER: ${{ vars.DOCKERHUB_NAMESPACE }}

@@ -112,7 +112,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	title := os.Getenv("TITLE")
 	if title == "" {
-		title = "Rancher Demo"
+		title = "Cow Demo"
 	}
 
 	hostname := getHostname()
@@ -143,7 +143,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		ShowVersion:     os.Getenv("SHOW_VERSION") != "",
 	}
 
-	t.Execute(w, cnt)
+	_ = t.Execute(w, cnt)
 }
 
 func info(w http.ResponseWriter, r *http.Request) {
@@ -269,10 +269,10 @@ func counter(h http.Handler) http.Handler {
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "rancher-demo"
-	app.Usage = "rancher demo application"
-	app.Version = "1.4.1"
-	app.Author = "@oskapt"
+	app.Name = "cow-demo"
+	app.Usage = "Cow demo application"
+	app.Version = "2.0.0"
+	app.Author = ""
 	app.Email = ""
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -333,17 +333,15 @@ func main() {
 			}
 		}()
 
-		var err error
 		if tlsCert != "" && tlsKey != "" {
-			err = srv.ListenAndServeTLS(tlsCert, tlsKey)
+			return srv.ListenAndServeTLS(tlsCert, tlsKey)
 		} else {
-			err = srv.ListenAndServe()
+			return srv.ListenAndServe()
 		}
-
-		return err
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	err := app.Run(os.Args)
+	if err != nil {
 		log.Fatal(err)
 	}
 }
