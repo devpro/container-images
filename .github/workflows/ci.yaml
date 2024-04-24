@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
-      - name: Build Game 2048 container image
+      - name: Build container images from sources
         run: |
           cd src/game-2048
           docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
