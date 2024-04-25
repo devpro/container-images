@@ -18,7 +18,25 @@
             var colors = new Object;
             var refreshInterval = Number({{ .RefreshInterval }});
 
-            function getColor(cowColor) {
+            function getPetsAsset(pets) {
+                var asset;
+                switch (pets) {
+					case "cows":
+                  		asset = "static/img/rancher-logo-cow-blue.png"
+                  		break;
+                	case "chameleons":
+                  		asset = "static/img/suse-logo-chameleon-green.png"
+                  		break;
+                	case "cowmeleons":
+                  		asset = "static/img/suse-rancher-cowmeleon.png"
+                  		break;
+                	default:
+						asset = "static/img/rancher-logo-cow-blue.png"
+				}
+				return asset;
+			}
+
+            function getColor(containerColor) {
                 var allColors = [
                     "red",
                     "orange",
@@ -34,10 +52,10 @@
 
                 color = allColors[Math.floor(Math.random()*allColors.length)];
 
-                if (color != cowColor) {
+                if (color != containerColor) {
                     return color;
                 } else {
-                    return getColor(cowColor);
+                    return getColor(containerColor);
                 }
             }
 
@@ -59,14 +77,15 @@
                      },
                      success: function(data){
                          if (! (colors.hasOwnProperty(data.version))) {
-                             colors[data.version] = getColor(data.cowColor);
+                             colors[data.version] = getColor(data.containerColor);
                          }
                          var color = colors[data.version];
                          if ($.inArray(data.instance, containers) == -1) {
                              containers.push(data.instance);
                          }
 
-                         var cowColor = data.cowColor;
+                         var containerColor = data.containerColor;
+						 var petsAsset = getPetsAsset(data.pets);
 
                          // add timestamp for when we last saw this container
                          lastSeen[data.instance] = ts;
@@ -78,11 +97,13 @@
                                 console.log("creating instance " + instanceName);
 
                                 // create a shorter display name for the tile
-                                var displayName = instanceName.match(/.+-(\w+)$/)[1];
-                                if (displayName === null) {
+                                var displayName = instanceName.match(/.+-(\w+)$/);
+                                if (!displayName) {
                                     displayName = instanceName;
+                                } else {
+                                  displayName = displayName[1];
                                 }
-                                var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image" id="replica" style="background-color: ' + cowColor + ';"><img width="25%" height="25%" src="static/img/rancher-logo-cow-blue.png"></div><div class="content centered view-computer"><div> {{ if .ShowVersion }}<div class="ui top left attached ' + color + ' label">' + data.version +'</div>{{ end }} <div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + displayName + '</div></div></div>';
+                                var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image" id="replica" style="background-color: ' + containerColor + ';"><img width="25%" height="25%" src="' + petsAsset + '"></div><div class="content centered view-computer"><div> {{ if .ShowVersion }}<div class="ui top left attached ' + color + ' label">' + data.version +'</div>{{ end }} <div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + displayName + '</div></div></div>';
 
                                 $("div.container-group").append(elData);
                                 el = $("#instance-" + instanceName);
