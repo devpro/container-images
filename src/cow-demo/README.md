@@ -105,8 +105,9 @@ By default the loaded page will reach back to `/demo` every `REFRESH_INTERVAL` a
 - `/load` - adds a 2s delay to the response from `/info` - use this for putting artificial load on the system and watching the replicas scale
 
 ## Backlog
-*
+
 * Upgrade [semantic-ui](https://semantic-ui.com/) ("2.2.13") to 2.4 and make dist folder creation works (to be removed from git)
+* Publish arm and arm64 container images
 
 ## Dependencies
 
