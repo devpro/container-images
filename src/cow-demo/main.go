@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,16 +32,18 @@ type (
 		Metadata        string
 		SkipErrors      bool
 		ShowVersion     bool
-		CowColor        string
+		ContainerColor  string
+		Pets            string
 		RemoveInterval  string
 	}
 
 	Ping struct {
-		Instance  string `json:"instance"`
-		Version   string `json:"version"`
-		Metadata  string `json:"metadata,omitempty"`
-		RequestID string `json:"request_id,omitempty"`
-		CowColor  string `json:"cowColor"`
+		Instance       string `json:"instance"`
+		Version        string `json:"version"`
+		Metadata       string `json:"metadata,omitempty"`
+		RequestID      string `json:"request_id,omitempty"`
+		ContainerColor string `json:"containerColor"`
+		Pets           string `json:"pets"`
 	}
 
 	Info struct {
@@ -219,16 +221,22 @@ func ping(w http.ResponseWriter, r *http.Request) {
 
 	hostname := getHostname()
 
-	cowColor := os.Getenv("COW_COLOR")
-	if cowColor == "" {
-		cowColor = "black"
+	containerColor := os.Getenv("CONTAINER_COLOR")
+	if containerColor == "" {
+		containerColor = "black"
+	}
+
+	pets := os.Getenv("PETS")
+	if pets == "" {
+		pets = "cows"
 	}
 
 	p := Ping{
-		Instance: hostname,
-		Version:  getVersion(),
-		Metadata: getMetadata(),
-		CowColor: cowColor,
+		Instance:       hostname,
+		Version:        getVersion(),
+		Metadata:       getMetadata(),
+		ContainerColor: containerColor,
+		Pets:           pets,
 	}
 
 	requestID := r.Header.Get("X-Request-Id")
@@ -268,76 +276,78 @@ func counter(h http.Handler) http.Handler {
 }
 
 func main() {
-	app := cli.NewApp()
-	app.Name = "cow-demo"
-	app.Usage = "Cow demo application"
-	app.Version = "2.0.0"
-	app.Author = ""
-	app.Email = ""
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "listen-addr, l",
-			Usage: "listen address",
-			Value: ":8080",
+	app := &cli.App{
+		Name:    "cow-demo",
+		Usage:   "Cow demo application",
+		Version: "2.0.0",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "listen-addr",
+				Aliases: []string{"l"},
+				Usage:   "listen address",
+				Value:   ":8080",
+			},
+			&cli.StringFlag{
+				Name:    "tls-cert",
+				Aliases: []string{"c"},
+				Usage:   "tls certificate",
+				Value:   "",
+			},
+			&cli.StringFlag{
+				Name:    "tls-key",
+				Aliases: []string{"k"},
+				Usage:   "tls certificate key",
+				Value:   "",
+			},
 		},
-		cli.StringFlag{
-			Name:  "tls-cert, c",
-			Usage: "tls certificate",
-			Value: "",
-		},
-		cli.StringFlag{
-			Name:  "tls-key, k",
-			Usage: "tls certificate key",
-			Value: "",
-		},
-	}
-	app.Action = func(c *cli.Context) error {
-		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-		mux.Handle("/demo", counter(http.HandlerFunc(ping)))
-		mux.Handle("/info", counter(http.HandlerFunc(info)))
-		mux.Handle("/load", counter(http.HandlerFunc(load)))
-		mux.Handle("/fail", counter(http.HandlerFunc(fail)))
-		mux.Handle("/404", counter(http.HandlerFunc(missing)))
-		mux.Handle("/", counter(http.HandlerFunc(index)))
+		Action: func(c *cli.Context) error {
+			mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+			mux.Handle("/demo", counter(http.HandlerFunc(ping)))
+			mux.Handle("/info", counter(http.HandlerFunc(info)))
+			mux.Handle("/load", counter(http.HandlerFunc(load)))
+			mux.Handle("/fail", counter(http.HandlerFunc(fail)))
+			mux.Handle("/404", counter(http.HandlerFunc(missing)))
+			mux.Handle("/", counter(http.HandlerFunc(index)))
 
-		hostname := getHostname()
-		listenAddr := c.String("listen-addr")
-		tlsCert := c.String("tls-cert")
-		tlsKey := c.String("tls-key")
+			hostname := getHostname()
+			listenAddr := c.String("listen-addr")
+			tlsCert := c.String("tls-cert")
+			tlsKey := c.String("tls-key")
 
-		srv := &http.Server{
-			Handler:      mux,
-			Addr:         listenAddr,
-			WriteTimeout: time.Second * 10,
-			ReadTimeout:  time.Second * 10,
-		}
-
-		log.Printf("instance: %s\n", hostname)
-		log.Printf("listening on %s\n", listenAddr)
-
-		ch := make(chan os.Signal, 1)
-		signal.Notify(ch, os.Interrupt)
-
-		go func() {
-			select {
-			case <-ch:
-				log.Println("stopping")
-				ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-				defer cancel()
-
-				waitForDone(ctx)
-
-				if err := srv.Shutdown(ctx); err != nil {
-					log.Fatal(err)
-				}
+			srv := &http.Server{
+				Handler:      mux,
+				Addr:         listenAddr,
+				WriteTimeout: time.Second * 10,
+				ReadTimeout:  time.Second * 10,
 			}
-		}()
 
-		if tlsCert != "" && tlsKey != "" {
-			return srv.ListenAndServeTLS(tlsCert, tlsKey)
-		} else {
-			return srv.ListenAndServe()
-		}
+			log.Printf("instance: %s\n", hostname)
+			log.Printf("listening on %s\n", listenAddr)
+
+			ch := make(chan os.Signal, 1)
+			signal.Notify(ch, os.Interrupt)
+
+			go func() {
+				select {
+				case <-ch:
+					log.Println("stopping")
+					ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+					defer cancel()
+
+					waitForDone(ctx)
+
+					if err := srv.Shutdown(ctx); err != nil {
+						log.Fatal(err)
+					}
+				}
+			}()
+
+			if tlsCert != "" && tlsKey != "" {
+				return srv.ListenAndServeTLS(tlsCert, tlsKey)
+			} else {
+				return srv.ListenAndServe()
+			}
+		},
 	}
 
 	err := app.Run(os.Args)

@@ -7,6 +7,7 @@ Container image definitions to provide examples & best pratices, and push images
 
 ## Applications
 
+* [Cow demo](src/cow-demo/README.md)
 * [Game 2048](src/game-2048/README.md)
 
 ## Samples

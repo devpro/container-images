@@ -3,6 +3,7 @@
 [![Docker Image Version](https://img.shields.io/docker/v/devprofr/cow-demo?label=Docker)](https://hub.docker.com/r/devprofr/cow-demo)
 
 💡 This is a hard fork of [oskapt/rancher-demo](https://github.com/oskapt/rancher-demo) who hasn't been updated since 2021.
+It also took the updates from [bashofmann/rancher-demo](https://github.com/bashofmann/rancher-demo).
 
 This is a Go demo application used for demonstrating Kubernetes and load balancing.
 
@@ -10,7 +11,7 @@ It will create a colored icon for each replica within a ReplicaSet and indicate 
 Replicas which haven't been heard from will begin to fade out, until after a configurable number of seconds they will disappear.
 This is useful for demonstrating scaling up/down an upgraded application.
 
-## How to configure
+![screenshot](screenshot.png)
 
 Environment variables:
 
@@ -19,9 +20,9 @@ Environment variables:
 - `REFRESH_INTERVAL`: interval in milliseconds for page to refresh (default: 1000)
 - `EXPIRE_INTERVAL`: how long a replica can go without being seen before we remove it from the display (default: 10s)
 - `REMOVE_INTERVAL`: how long after `EXPIRE_INTERVAL` until we remove the icon (default: 20s)
-- `SKIP_ERRORS`: set this to prevent errors from counting (useful on janky load balancers)
+- `SKIP_ERRORS`: set this to prevent errors from counting
 - `METADATA`: extra text at bottom of info area
-- `COW_COLOR`: what color the cow background should be (default: black). Valid options are any color from the CSS pallete, including:
+- `CONTAINER_COLOR`: what color the container background should be (default: black). Valid options are any color from the CSS pallet, including:
   - red
   - orange
   - yellow
@@ -33,6 +34,10 @@ Environment variables:
   - purple
   - pink
   - black
+- `PETS`: The kind of pet shown in each container. Valid options are:
+  - cows
+  - chameleons
+  - cowmeleons
 
 ### How to test
 
@@ -44,16 +49,32 @@ go test -v ./...
 
 ### How to run locally
 
+Update the dependencies (if a change has been made):
+
+```bash
+go mod tidy
+```
+
 Build the application:
 
 ```bash
 go build
 ```
 
+Build web content files (not working for the moment):
+
+```bash
+cd ui && npm install
+cp -f semantic.theme.config semantic/src/theme.config && mkdir -p semantic/src/themes/app && cp -rf semantic.theme/* semantic/src/themes/app
+cd semantic && npx gulp build
+mkdir -p ../../static/dist/themes/default/ && cp -f dist/semantic.min.css ../../static/dist/semantic.min.css && cp -f dist/semantic.min.js ../../static/dist/semantic.min.js && cp -r dist/themes/default/assets ../../static/dist/themes/default/
+cd ../..
+```
+
 Start the web server:
 
 ````bash
-COW_COLOR=purple ./cow-demo
+PETS=chameleons CONTAINER_COLOR=purple ./cow-demo
 ````
 
 Open [localhost:8080](http://localhost:8080)
@@ -85,5 +106,9 @@ By default the loaded page will reach back to `/demo` every `REFRESH_INTERVAL` a
 
 ## Backlog
 
-* Upgrade [urfave/cli](https://cli.urfave.org/) to v2
-* Upgrade [semantic-ui](https://semantic-ui.com/) ("2.2.13") to 2.4
+* Upgrade [semantic-ui](https://semantic-ui.com/) ("2.2.13") to 2.4 and make dist folder creation works (to be removed from git)
+* Publish arm and arm64 container images
+
+## Dependencies
+
+This application is using [urfave/cli](https://cli.urfave.org/) and [semantic-ui](https://semantic-ui.com/).
