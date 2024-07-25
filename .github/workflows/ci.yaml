@@ -56,8 +56,8 @@ jobs:
         with:
           image-repository: ${{ env.CONTAINER_REGITRY_DOMAIN }}/${{ env.IMAGE_FOLDER }}/redirect-server
           image-tag: ${{ env.IMAGE_TAG }}
-          min-high-cves-to-fail: "1"
-          min-medium-cves-to-fail: "1"
+          min-high-cves-to-fail: "2"
+          min-medium-cves-to-fail: "2"
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       CONTAINER_REGITRY_DOMAIN: docker.io

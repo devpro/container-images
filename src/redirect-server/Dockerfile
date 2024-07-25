@@ -8,4 +8,4 @@ EXPOSE 8080
 
 ENV REDIRECT_URL=http://default.url
 
-CMD ["python", "redirect_server.py"]
+CMD ["python3", "redirect_server.py"]
