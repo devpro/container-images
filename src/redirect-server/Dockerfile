@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM registry.suse.com/bci/python:3.12
 
 WORKDIR /app
 
