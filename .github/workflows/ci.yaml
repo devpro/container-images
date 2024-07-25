@@ -32,6 +32,8 @@ jobs:
           docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
           cd ../cow-demo
           docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
+          cd ../redirect-server
+          docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
       - name: Scan game 2048 container image with NeuVector
         if: ${{ vars.USE_NEUVECTOR == 'true' }}
         uses: neuvector/scan-action@main
@@ -45,6 +47,14 @@ jobs:
         uses: neuvector/scan-action@main
         with:
           image-repository: ${{ env.CONTAINER_REGITRY_DOMAIN }}/${{ env.IMAGE_FOLDER }}/cow-demo
+          image-tag: ${{ env.IMAGE_TAG }}
+          min-high-cves-to-fail: "1"
+          min-medium-cves-to-fail: "1"
+      - name: Scan redirect server container image with NeuVector
+        if: ${{ vars.USE_NEUVECTOR == 'true' }}
+        uses: neuvector/scan-action@main
+        with:
+          image-repository: ${{ env.CONTAINER_REGITRY_DOMAIN }}/${{ env.IMAGE_FOLDER }}/redirect-server
           image-tag: ${{ env.IMAGE_TAG }}
           min-high-cves-to-fail: "1"
           min-medium-cves-to-fail: "1"
