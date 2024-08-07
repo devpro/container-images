@@ -23,12 +23,15 @@ jobs:
           docker build . --tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
           cd ../cow-demo
           docker build . --tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
+          cd ../rancher-helloworld
+          docker build . --tag $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
           cd ../redirect-server
           docker build . --tag $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
       - name: Push image to container registry
         run: |
           docker push $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
           docker push $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
+          docker push $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
           docker push $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
       - name: Push latest tag to container registry
         if: ${{ github.ref_name == 'main' }}
@@ -37,6 +40,8 @@ jobs:
           docker push $IMAGE_FOLDER/game-2048:latest
           docker tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/cow-demo:latest
           docker push $IMAGE_FOLDER/cow-demo:latest
+          docker tag $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/rancher-helloworld:latest
+          docker push $IMAGE_FOLDER/rancher-helloworld:latest
           docker tag $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/redirect-server:latest
           docker push $IMAGE_FOLDER/redirect-server:latest
     env:

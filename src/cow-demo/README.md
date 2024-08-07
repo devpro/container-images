@@ -39,6 +39,8 @@ Environment variables:
   - chameleons
   - cowmeleons
 
+## Local development
+
 ### How to test
 
 Run in a terminal:
@@ -106,8 +108,8 @@ By default the loaded page will reach back to `/demo` every `REFRESH_INTERVAL` a
 
 ## Backlog
 
-* Upgrade [semantic-ui](https://semantic-ui.com/) ("2.2.13") to 2.4 and make dist folder creation works (to be removed from git)
-* Publish arm and arm64 container images
+- Upgrade [semantic-ui](https://semantic-ui.com/) ("2.2.13") to 2.4 and make dist folder creation works (to be removed from git)
+- Publish arm and arm64 container images
 
 ## Dependencies
 
