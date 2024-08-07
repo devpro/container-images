@@ -32,6 +32,8 @@ jobs:
           docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
           cd ../cow-demo
           docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
+          cd ../rancher-helloworld
+          docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
           cd ../redirect-server
           docker build . --tag $CONTAINER_REGITRY_DOMAIN/$IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
       - name: Scan game 2048 container image with NeuVector
@@ -50,6 +52,14 @@ jobs:
           image-tag: ${{ env.IMAGE_TAG }}
           min-high-cves-to-fail: "1"
           min-medium-cves-to-fail: "1"
+      - name: Scan Rancher Hello world container image with NeuVector
+        if: ${{ vars.USE_NEUVECTOR == 'true' }}
+        uses: neuvector/scan-action@main
+        with:
+          image-repository: ${{ env.CONTAINER_REGITRY_DOMAIN }}/${{ env.IMAGE_FOLDER }}/rancher-helloworld
+          image-tag: ${{ env.IMAGE_TAG }}
+          min-high-cves-to-fail: "2"
+          min-medium-cves-to-fail: "2"
       - name: Scan redirect server container image with NeuVector
         if: ${{ vars.USE_NEUVECTOR == 'true' }}
         uses: neuvector/scan-action@main
