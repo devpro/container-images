@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  php:
+    build: ./.docker/php
+    volumes:
+      - ./sf4-website:/var/www/sf4-website:rw,cached
+    ports:
+      - "9000:9000"
+    networks:
+      - sf4-website-network
+    container_name: sf4_website_php
+
+  nginx:
+    build: ./.docker/nginx
+    volumes:
+      - ./sf4-website:/var/www/sf4-website:ro
+    ports:
+      - "8000:8000"
+    networks:
+      - sf4-website-network
+    container_name: sf4_website_nginx
+
+networks:
+  sf4-website-network:
+    driver: bridge
