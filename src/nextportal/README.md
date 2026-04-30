@@ -45,8 +45,16 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
+Build the container image:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker build -t ghcr.io/devpro/nextportal:0.1.0 .
+```
+
+Run the image:
+
+```bash
+docker run --rm --name nextportal -p 3000:3000 ghcr.io/devpro/nextportal:0.1.0
+```
