@@ -7,6 +7,21 @@ Created with:
 npx create-next-app@16.0.6 nextportal
 -->
 
+## File organization
+
+```txt
+your-app/
+├── data/dashboard.yaml        ← data, edit freely
+├── lib/data.ts                ← data service (swap source here) - single source of truth for data fetching
+├── app/page.tsx               ← Server Component (thin shell) - it calls getDashboardData() and passes the result as a prop
+├── app/dashboard.tsx          ← Client Component (all the UI) - receives typed data as props, handles all the interactivity
+└── global.d.ts
+```
+
+<!--
+Every function is already async, so when ready for a DB replace loadYaml() (and remove js-yaml, @types/js-yaml from packages)
+-->
+
 ## Getting Started
 
 First, run the development server:
@@ -32,6 +47,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -1,0 +1,90 @@
+﻿metrics:
+  - label: Active Users
+    value: "14,302"
+    delta: "+8.4%"
+    up: true
+    accent: blue
+
+  - label: API Calls / min
+    value: "37,917"
+    delta: "+12.1%"
+    up: true
+    accent: green
+
+  - label: Error Rate
+    value: "0.12%"
+    delta: "-0.04%"
+    up: true
+    accent: red
+
+  - label: Avg Latency
+    value: "42 ms"
+    delta: "-6 ms"
+    up: true
+    accent: purple
+
+services:
+  - name: Auth Service
+    status: operational
+    uptime: "99.98%"
+    latency: "18 ms"
+
+  - name: Data Pipeline
+    status: operational
+    uptime: "99.91%"
+    latency: "56 ms"
+
+  - name: CDN Edge
+    status: degraded
+    uptime: "98.40%"
+    latency: "120 ms"
+
+  - name: Search Index
+    status: operational
+    uptime: "99.99%"
+    latency: "9 ms"
+
+  - name: Notification Hub
+    status: operational
+    uptime: "99.87%"
+    latency: "34 ms"
+
+  - name: Analytics Store
+    status: down
+    uptime: "97.20%"
+    latency: "—"
+
+activity:
+  - time: "09:41"
+    event: "Deployment v2.14.0 succeeded on prod-us-1"
+    type: ok
+
+  - time: "09:38"
+    event: "CDN Edge latency spike detected (P95 > 200ms)"
+    type: warn
+
+  - time: "09:31"
+    event: "Analytics Store health check failed (3/3)"
+    type: error
+
+  - time: "09:24"
+    event: "Auto-scaled worker pool: 12 → 18 instances"
+    type: info
+
+  - time: "09:17"
+    event: "Certificate renewed for api.nexus.io"
+    type: ok
+
+  - time: "09:04"
+    event: "Rate limiter triggered: IP 82.x.x.x blocked"
+    type: warn
+
+  - time: "08:52"
+    event: "Database snapshot completed (14.2 GB)"
+    type: ok
+
+requestVolume:
+  # 24 hourly buckets, 0-100 scale
+  hours: [22,18,14,10,8,12,28,45,62,74,80,88,92,86,90,95,88,76,68,58,50,42,36,28]
+  peak: "95k"
+  avg: "56k"
