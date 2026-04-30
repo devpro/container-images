@@ -109,7 +109,7 @@ function LiveClock() {
 // ── Spark / Mini bar for metric card ──────────────────────────────────────────
 function MiniBar({ color }: { color: string }) {
   const pts = Array.from({ length: 8 }, (_, i) =>
-    Math.round(30 + Math.sin(i * 1.1) * 15 + Math.random() * 10)
+    Math.round(30 + Math.sin(i * 1.1) * 15 + Math.sin(i * 2.7) * 5)
   );
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 28 }}>
