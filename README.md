@@ -9,5 +9,6 @@ Container image definitions to provide examples & best pratices, and push images
 
 * [Cow demo](src/cow-demo/README.md)
 * [Game 2048](src/game-2048/README.md)
+* [NextPortal](src/nextportal/README.md)
 * [Rancher Hello World](src/rancher-helloworld/README.md)
 * [Redirect Server](src/redirect-server/README.md)

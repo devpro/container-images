@@ -53,8 +53,20 @@ Build the container image:
 docker build -t ghcr.io/devpro/nextportal:0.1.0 .
 ```
 
-Run the image:
+Test the image:
 
 ```bash
 docker run --rm --name nextportal -p 3000:3000 ghcr.io/devpro/nextportal:0.1.0
+```
+
+Login container image registry (GitHub packages, with a classic personal access token with write:packages permissions)
+
+```bash
+docker login ghcr.io
+```
+
+Publish the image:
+
+```bash
+docker push ghcr.io/devpro/nextportal:0.1.0
 ```
