@@ -70,3 +70,9 @@ Publish the image:
 ```bash
 docker push ghcr.io/devpro/nextportal:0.1.0
 ```
+
+Make sure the package is public, from the GitHub profile.
+
+<!--
+trivy image ghcr.io/devpro/nextportal:0.1.0
+-->
