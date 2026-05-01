@@ -59,6 +59,12 @@ Test the image:
 docker run --rm --name nextportal -p 3000:3000 ghcr.io/devpro/nextportal:0.1.0
 ```
 
+Open the local website:
+
+```bash
+echo http://localhost:3000
+```
+
 Login container image registry (GitHub packages, with a classic personal access token with write:packages permissions)
 
 ```bash
