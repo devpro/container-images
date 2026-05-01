@@ -5,10 +5,18 @@
 
 Container image definitions to provide examples & best pratices, and push images on a registry.
 
-## Applications
+## Demonstrations
 
 * [Cow demo](src/cow-demo/README.md)
 * [Game 2048](src/game-2048/README.md)
-* [NextPortal](src/nextportal/README.md)
 * [Rancher Hello World](src/rancher-helloworld/README.md)
+* [Redirect Server](src/redirect-server/README.md)
+
+## Security workshops
+
+* [NextPortal](src/nextportal/README.md)
+* [Tiny File Manager](src/tinyfilemanager/README.md)
+
+## Utilities
+
 * [Redirect Server](src/redirect-server/README.md)
