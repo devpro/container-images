@@ -1,0 +1,44 @@
+# Adjust annotations to match your ingress controller:
+#   - nginx-ingress: nginx.ingress.kubernetes.io/*
+#   - Traefik:       traefik.ingress.kubernetes.io/*
+#   - AWS ALB:       alb.ingress.kubernetes.io/*
+#
+# cert-manager is assumed for TLS. Replace the issuer annotation if you
+# manage certs differently.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ctf-app
+  namespace: ctf
+  labels:
+    app.kubernetes.io/name: ctf-app
+  annotations:
+    # ── TLS (cert-manager) ────────────────────────────────────────────────
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+    # ── nginx-ingress ─────────────────────────────────────────────────────
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+
+    # ── Security headers (if your ingress controller doesn't forward them) ─
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+spec:
+  ingressClassName: nginx   # change to your IngressClass name
+  tls:
+    - hosts:
+        - ctf.yourdomain.com   # ← change this
+      secretName: ctf-tls
+  rules:
+    - host: ctf.yourdomain.com   # ← change this
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ctf-app
+                port:
+                  name: http
