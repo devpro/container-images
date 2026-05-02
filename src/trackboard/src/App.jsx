@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { store } from "./storage.js";
 import {
   TEAMS,
@@ -47,7 +47,6 @@ const css = `
 
   .app { min-height: 100vh; padding: 0 0 60px; }
 
-  /* HEADER */
   .header {
     border-bottom: 1px solid var(--border);
     padding: 20px 32px;
@@ -63,17 +62,13 @@ const css = `
     display: flex; align-items: center; justify-content: center;
     font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
     color: var(--green); box-shadow: var(--glow); position: relative;
-    animation: pulse-border 3s ease-in-out infinite;
-    flex-shrink: 0;
+    animation: pulse-border 3s ease-in-out infinite; flex-shrink: 0;
   }
   @keyframes pulse-border {
     0%, 100% { box-shadow: 0 0 8px #00ff8844; }
     50% { box-shadow: 0 0 20px #00ff8888; }
   }
-  .logo-mark::before {
-    content: ''; position: absolute; inset: 3px;
-    border: 1px solid var(--green-dim); opacity: 0.4;
-  }
+  .logo-mark::before { content: ''; position: absolute; inset: 3px; border: 1px solid var(--green-dim); opacity: 0.4; }
   .logo-text { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 3px; color: var(--green); }
   .logo-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; margin-top: 2px; }
   .header-nav { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -86,14 +81,11 @@ const css = `
   .nav-btn.danger { border-color: #3a1010; color: #884444; }
   .nav-btn.danger:hover { border-color: var(--red); color: var(--red); box-shadow: 0 0 12px #ff444444; }
 
-  /* LAYOUT */
   .section { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
 
-  /* CARDS */
   .card {
     background: var(--bg2); border: 1px solid var(--border);
-    padding: 24px; margin-bottom: 16px;
-    position: relative; overflow: hidden;
+    padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden;
   }
   .card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -101,7 +93,6 @@ const css = `
   }
   .card-title { font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 3px; color: var(--green-dim); margin-bottom: 16px; text-transform: uppercase; }
 
-  /* INPUTS */
   .input {
     background: var(--bg3); border: 1px solid var(--border); color: var(--text);
     padding: 10px 14px; font-family: 'Share Tech Mono', monospace; font-size: 13px;
@@ -111,7 +102,6 @@ const css = `
   .input::placeholder { color: var(--text-dim); }
   .input-label { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 6px; display: block; text-transform: uppercase; }
 
-  /* BUTTONS */
   .btn {
     background: transparent; border: 1px solid var(--green-dim); color: var(--green);
     padding: 10px 24px; font-family: 'Share Tech Mono', monospace; font-size: 12px;
@@ -123,21 +113,13 @@ const css = `
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-full { width: 100%; justify-content: center; }
   .btn-sm { padding: 6px 14px; font-size: 11px; }
-  .btn-orange { border-color: var(--orange); color: var(--orange); }
-  .btn-orange:hover { background: #1a0a00; box-shadow: 0 0 12px #f9731644; }
-  .btn-cyan { border-color: var(--cyan); color: var(--cyan); }
-  .btn-cyan:hover { background: #001a1f; box-shadow: 0 0 12px #22d3ee44; }
   .btn-red { border-color: var(--red); color: var(--red); }
   .btn-red:hover { background: #1a0000; box-shadow: 0 0 12px #ff444444; }
   .btn-ghost { border-color: transparent; color: var(--text-dim); }
   .btn-ghost:hover { border-color: var(--border); color: var(--text); background: transparent; box-shadow: none; }
 
-  /* SCOREBOARD */
   .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
-  .team-score {
-    border: 1px solid; padding: 20px; text-align: center; position: relative; overflow: hidden;
-    background: var(--bg2);
-  }
+  .team-score { border: 1px solid; padding: 20px; text-align: center; position: relative; overflow: hidden; background: var(--bg2); }
   .team-score.orange { border-color: #7a3a10; }
   .team-score.cyan { border-color: #104a5a; }
   .team-score::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
@@ -151,52 +133,28 @@ const css = `
   .team-number.cyan { color: var(--cyan); text-shadow: 0 0 30px #22d3ee66; }
   .team-label { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; margin-top: 6px; }
 
-  /* MINI SCORE CELLS */
   .mini-scores { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 6px; }
-  .mini-cell {
-    height: 28px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
-    font-size: 10px; letter-spacing: 1px; transition: all 0.3s;
-  }
+  .mini-cell { height: 28px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; letter-spacing: 1px; transition: all 0.3s; }
   .mini-cell.done-orange { border-color: var(--orange); background: #1a0500; color: var(--orange); }
   .mini-cell.done-cyan { border-color: var(--cyan); background: #001215; color: var(--cyan); }
 
-  /* COMPLETION TOGGLE GRID */
-  .completion-header {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
-    margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
-  }
+  .completion-header { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .completion-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: center; }
-  .check-btn {
-    border: 1px solid; padding: 7px 12px; font-family: 'Share Tech Mono', monospace;
-    font-size: 11px; cursor: pointer; transition: all 0.2s; text-align: center;
-    letter-spacing: 1px; background: transparent;
-  }
+  .check-btn { border: 1px solid; padding: 7px 12px; font-family: 'Share Tech Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s; text-align: center; letter-spacing: 1px; background: transparent; }
   .check-btn.done-orange { border-color: var(--orange); color: var(--orange); background: #1a0800; }
   .check-btn.done-cyan { border-color: var(--cyan); color: var(--cyan); background: #001015; }
   .check-btn.undone { border-color: var(--border); color: var(--text-dim); }
   .check-btn:hover { opacity: 0.75; }
 
-  /* PARTICIPANT / HERO */
   .participant-header { text-align: center; padding: 60px 24px 40px; }
-  .event-title {
-    font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 5vw, 42px);
-    font-weight: 900; letter-spacing: 6px; color: var(--green);
-    text-shadow: 0 0 40px #00ff8855; margin-bottom: 8px; line-height: 1.1;
-  }
+  .event-title { font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 5vw, 42px); font-weight: 900; letter-spacing: 6px; color: var(--green); text-shadow: 0 0 40px #00ff8855; margin-bottom: 8px; line-height: 1.1; }
   .event-sub { font-size: 11px; letter-spacing: 4px; color: var(--text-dim); }
-  .live-indicator {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 10px; letter-spacing: 3px; color: var(--green-dim); margin-bottom: 24px;
-  }
+  .live-indicator { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 3px; color: var(--green-dim); margin-bottom: 24px; }
   .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: blink 1s ease-in-out infinite; }
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-  /* TEAM SELECT */
   .team-select { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
-  .team-option {
-    border: 1px solid; padding: 20px; text-align: center; cursor: pointer;
-    transition: all 0.3s; font-family: 'Share Tech Mono', monospace; background: var(--bg2);
-  }
+  .team-option { border: 1px solid; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; font-family: 'Share Tech Mono', monospace; background: var(--bg2); }
   .team-option.orange { border-color: #7a3a10; color: var(--text-dim); }
   .team-option.orange:hover, .team-option.orange.selected { border-color: var(--orange); color: var(--orange); background: #0f0800; box-shadow: 0 0 20px #f9731633; }
   .team-option.cyan { border-color: #104a5a; color: var(--text-dim); }
@@ -205,29 +163,15 @@ const css = `
   .team-opt-name { font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 3px; }
   .team-count { font-size: 10px; color: var(--text-dim); margin-top: 6px; }
 
-  /* ACTIVE ROUND DISPLAY */
-  .round-display {
-    border: 1px solid var(--green-dim); padding: 32px; text-align: center;
-    position: relative; overflow: hidden; background: var(--bg2); margin: 24px 0;
-  }
-  .round-display::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, #00ff8808 0%, transparent 70%);
-    pointer-events: none;
-  }
+  .round-display { border: 1px solid var(--green-dim); padding: 32px; text-align: center; position: relative; overflow: hidden; background: var(--bg2); margin: 24px 0; }
+  .round-display::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, #00ff8808 0%, transparent 70%); pointer-events: none; }
   .round-display-num { font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 4px; color: var(--text-dim); margin-bottom: 8px; }
   .round-display-title { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 20px; text-shadow: 0 0 20px #00ff8844; }
   .round-display-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; line-height: 1.6; }
-  .track-link-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    border: 1px solid var(--green); color: var(--green); background: var(--green-dark);
-    padding: 14px 28px; font-family: 'Share Tech Mono', monospace; font-size: 13px;
-    letter-spacing: 2px; cursor: pointer; transition: all 0.2s; text-decoration: none; text-transform: uppercase;
-  }
+  .track-link-btn { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--green); color: var(--green); background: var(--green-dark); padding: 14px 28px; font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; text-decoration: none; text-transform: uppercase; }
   .track-link-btn:hover { box-shadow: var(--glow-strong); background: #004422; }
   .no-url { color: var(--text-dim); font-size: 12px; letter-spacing: 2px; padding: 16px; border: 1px dashed var(--border); }
 
-  /* ADMIN SETUP */
   .setup-grid { display: grid; gap: 16px; }
   .round-setup { border: 1px solid var(--border); padding: 16px; background: var(--bg2); }
   .round-setup-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
@@ -236,7 +180,6 @@ const css = `
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
 
-  /* PARTICIPANTS TABLE */
   .table-wrapper { overflow-x: auto; }
   .participants-table { width: 100%; border-collapse: collapse; min-width: 400px; }
   .participants-table th { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); text-transform: uppercase; white-space: nowrap; }
@@ -246,23 +189,15 @@ const css = `
   .team-badge.orange { border-color: var(--orange); color: var(--orange); }
   .team-badge.cyan { border-color: var(--cyan); color: var(--cyan); }
 
-  /* ADMIN LOGIN */
   .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px; padding: 24px; }
   .login-title { font-family: 'Orbitron', sans-serif; font-size: 28px; letter-spacing: 6px; color: var(--green); text-shadow: 0 0 30px #00ff8866; text-align: center; }
   .login-sub { font-size: 11px; letter-spacing: 3px; color: var(--text-dim); }
   .login-form { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
 
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px; background: var(--bg3); border: 1px solid var(--green-dim);
-    color: var(--green); padding: 12px 20px; font-size: 12px; letter-spacing: 1px;
-    animation: slideIn 0.3s ease; z-index: 10000; max-width: calc(100vw - 48px);
-  }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg3); border: 1px solid var(--green-dim); color: var(--green); padding: 12px 20px; font-size: 12px; letter-spacing: 1px; animation: slideIn 0.3s ease; z-index: 10000; max-width: calc(100vw - 48px); }
   .toast.error { border-color: var(--red); color: var(--red); }
   @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-  /* UTILS */
-  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
   .text-dim { color: var(--text-dim); font-size: 11px; }
   .text-green { color: var(--green); }
   .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
@@ -283,22 +218,391 @@ function useToast() {
   return { toast, show };
 }
 
-// ─── Main App ─────────────────────────────────────────────────────────────────
+// ─── Components (module level — NEVER define components inside another component)
+// Defining a component inside a render function gives it a new identity every
+// render, causing React to unmount + remount it, which destroys input focus.
+// All components live here at the top level and receive what they need via props.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function RegistrationCard({ appState, participantName, setParticipantName, participantTeam, setParticipantTeam, onRegister }) {
+  return (
+    <div className="card">
+      <div className="card-title">// Operator Registration</div>
+      <label className="input-label">Your handle</label>
+      <input
+        className="input mb-8"
+        placeholder="e.g. h4x0r42"
+        value={participantName}
+        onChange={(e) => setParticipantName(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && onRegister()}
+        autoComplete="off"
+        spellCheck={false}
+        autoFocus
+      />
+      <label className="input-label" style={{ marginTop: 16 }}>Choose your team</label>
+      <div className="team-select">
+        {TEAMS.map((t) => {
+          const meta = TEAM_META[t];
+          const count = appState.participants.filter((p) => p.team === t).length;
+          return (
+            <div
+              key={t}
+              className={`team-option ${meta.color} ${participantTeam === t ? "selected" : ""}`}
+              onClick={() => setParticipantTeam(t)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && setParticipantTeam(t)}
+            >
+              <div className="team-icon">{meta.icon}</div>
+              <div className="team-opt-name">{t}</div>
+              <div className="team-count">{count} member{count !== 1 ? "s" : ""}</div>
+            </div>
+          );
+        })}
+      </div>
+      <button className="btn btn-full mt-8" onClick={onRegister}>
+        ▶ JOIN THE BATTLE
+      </button>
+    </div>
+  );
+}
+
+function ActivePlayerView({ appState, session, scoreOf, onLeave }) {
+  const myMeta = TEAM_META[session.team];
+  const currentRound = appState.rounds[appState.activeRound - 1];
+  return (
+    <>
+      <div className="round-display">
+        <div className="round-display-num">// ACTIVE CHALLENGE — ROUND {appState.activeRound}</div>
+        <div className="round-display-title">
+          {currentRound.title || `Challenge ${appState.activeRound}`}
+        </div>
+        {currentRound.description && (
+          <div className="round-display-desc">{currentRound.description}</div>
+        )}
+        {currentRound.url ? (
+          <a href={currentRound.url} target="_blank" rel="noreferrer" className="track-link-btn">
+            ⇒ OPEN INSTRUQT LAB
+          </a>
+        ) : (
+          <div className="no-url">⏳ Waiting for admin to configure this round…</div>
+        )}
+      </div>
+
+      <div className="card">
+        <div className="card-title">// Current Standings</div>
+        <div className="scoreboard">
+          {TEAMS.map((t) => {
+            const meta = TEAM_META[t];
+            return (
+              <div key={t} className={`team-score ${meta.color}`}>
+                <div className={`team-name ${meta.color}`}>{t}</div>
+                <div className={`team-number ${meta.color}`}>{scoreOf(t)}</div>
+                <div className="team-label">/ {NUM_ROUNDS} COMPLETED</div>
+              </div>
+            );
+          })}
+        </div>
+        {TEAMS.map((t) => {
+          const meta = TEAM_META[t];
+          return (
+            <div key={t} style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 10, letterSpacing: 2, color: meta.cssVar, marginBottom: 6 }}>
+                {t.toUpperCase()}
+              </div>
+              <div className="mini-scores">
+                {Array.from({ length: NUM_ROUNDS }, (_, i) => (
+                  <div key={i} className={`mini-cell ${appState.scores[t][i] ? `done-${meta.color}` : ""}`}>
+                    {appState.scores[t][i] ? "✓" : `R${i + 1}`}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ textAlign: "center" }}>
+        <span className="text-dim" style={{ marginRight: 12 }}>
+          Operator: <span style={{ color: myMeta.cssVar }}>{session.name}</span> · {session.team}
+        </span>
+        <button className="btn btn-ghost btn-sm" onClick={onLeave}>↩ Switch player</button>
+      </div>
+    </>
+  );
+}
+
+function ParticipantView({ appState, session, scoreOf, participantName, setParticipantName, participantTeam, setParticipantTeam, onRegister, onLeave }) {
+  return (
+    <div>
+      <div className="participant-header">
+        <div className="live-indicator"><div className="live-dot" /> LIVE EVENT</div>
+        <div className="event-title">SECURITY CTF</div>
+        <div className="event-sub">{EVENT_NAME.toUpperCase()} · {EVENT_DATE.toUpperCase()}</div>
+      </div>
+      <div className="section" style={{ paddingTop: 0 }}>
+        {!session ? (
+          <RegistrationCard
+            appState={appState}
+            participantName={participantName}
+            setParticipantName={setParticipantName}
+            participantTeam={participantTeam}
+            setParticipantTeam={setParticipantTeam}
+            onRegister={onRegister}
+          />
+        ) : (
+          <ActivePlayerView
+            appState={appState}
+            session={session}
+            scoreOf={scoreOf}
+            onLeave={onLeave}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AdminLoginView({ adminPw, setAdminPw, onLogin, onBack }) {
+  return (
+    <div className="login-screen">
+      <div className="login-title">ADMIN ACCESS</div>
+      <div className="login-sub">// SECURE TERMINAL</div>
+      <div className="login-form">
+        <label className="input-label">Password</label>
+        <input
+          className="input"
+          type="password"
+          placeholder="••••••••"
+          value={adminPw}
+          onChange={(e) => setAdminPw(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onLogin()}
+          autoFocus
+        />
+        <button className="btn btn-full" onClick={onLogin}>▶ AUTHENTICATE</button>
+        <button className="btn btn-full btn-ghost" onClick={onBack}>↩ Back</button>
+      </div>
+    </div>
+  );
+}
+
+function AdminScoreboard({ appState, scoreOf, onSetActiveRound, onToggleScore }) {
+  const currentRound = appState.rounds[appState.activeRound - 1];
+  return (
+    <div className="section">
+      <div className="scoreboard">
+        {TEAMS.map((t) => {
+          const meta = TEAM_META[t];
+          return (
+            <div key={t} className={`team-score ${meta.color}`}>
+              <div className={`team-name ${meta.color}`}>{t}</div>
+              <div className={`team-number ${meta.color}`}>{scoreOf(t)}</div>
+              <div className="team-label">/ {NUM_ROUNDS} ROUNDS</div>
+              <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 8 }}>
+                {appState.participants.filter((p) => p.team === t).length} members
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="card">
+        <div className="flex-between mb-8">
+          <div className="card-title">// Active Round</div>
+          <div className="gap-8">
+            {Array.from({ length: NUM_ROUNDS }, (_, i) => (
+              <button
+                key={i}
+                className={`btn btn-sm ${appState.activeRound === i + 1 ? "" : "btn-ghost"}`}
+                onClick={() => onSetActiveRound(i + 1)}
+              >
+                R{i + 1}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="text-dim">
+          Round <span className="text-green">{appState.activeRound}</span>
+          {" · "}{currentRound.title || `Challenge ${appState.activeRound}`}
+          {currentRound.url && (
+            <> · <span style={{ color: "var(--green-dim)" }}>
+              {currentRound.url.length > 60 ? currentRound.url.slice(0, 60) + "…" : currentRound.url}
+            </span></>
+          )}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-title">// Round Completions — click to toggle</div>
+        <div className="completion-header">
+          <div className="text-dim">ROUND</div>
+          <div style={{ fontSize: 10, letterSpacing: 2, color: "var(--orange)" }}>PENTESTERS</div>
+          <div style={{ fontSize: 10, letterSpacing: 2, color: "var(--cyan)" }}>DEFENDERS</div>
+        </div>
+        {appState.rounds.map((r, i) => (
+          <div key={i} className="completion-row">
+            <div style={{ fontSize: 12, color: appState.activeRound === i + 1 ? "var(--green)" : "var(--text-dim)" }}>
+              {appState.activeRound === i + 1 ? "▶ " : "   "}R{i + 1}
+              {r.title ? ` · ${r.title.slice(0, 18)}` : ""}
+            </div>
+            {TEAMS.map((t) => {
+              const done = appState.scores[t][i];
+              const meta = TEAM_META[t];
+              return (
+                <button
+                  key={t}
+                  className={`check-btn ${done ? `done-${meta.color}` : "undone"}`}
+                  onClick={() => onToggleScore(t, i)}
+                >
+                  {done ? "✓ DONE" : "○ PENDING"}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AdminSetup({ appState, onUpdateRoundField, onSave, onReset }) {
+  return (
+    <div className="section">
+      <div className="card">
+        <div className="card-title">// Track Configuration</div>
+        <p className="text-dim mb-16">
+          Paste your Instruqt track URLs and titles. Changes are local until you click Save.
+        </p>
+        <div className="setup-grid">
+          {appState.rounds.map((r, i) => (
+            <div key={i} className="round-setup">
+              <div className="round-setup-header">
+                <div className="round-num-badge">R{i + 1}</div>
+                <input
+                  className="input"
+                  style={{ flex: 1 }}
+                  placeholder="Challenge title"
+                  value={r.title}
+                  onChange={(e) => onUpdateRoundField(i, "title", e.target.value)}
+                />
+              </div>
+              <div className="round-fields">
+                <div className="field-row">
+                  <div>
+                    <label className="input-label">Instruqt Track URL</label>
+                    <input
+                      className="input"
+                      placeholder="https://play.instruqt.com/..."
+                      value={r.url}
+                      onChange={(e) => onUpdateRoundField(i, "url", e.target.value)}
+                      spellCheck={false}
+                    />
+                  </div>
+                  <div>
+                    <label className="input-label">Short description (optional)</label>
+                    <input
+                      className="input"
+                      placeholder="What will participants do?"
+                      value={r.description}
+                      onChange={(e) => onUpdateRoundField(i, "description", e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button className="btn btn-full mt-16" onClick={onSave}>▶ SAVE CONFIGURATION</button>
+      </div>
+
+      <div className="card">
+        <div className="card-title">// Danger Zone</div>
+        <p className="text-dim mb-16">Resets all scores, participants, and configuration.</p>
+        <button className="btn btn-red btn-sm" onClick={onReset}>⚠ RESET ALL DATA</button>
+      </div>
+    </div>
+  );
+}
+
+function AdminParticipants({ appState, onRemove }) {
+  const sorted = [...appState.participants].sort(
+    (a, b) => a.team.localeCompare(b.team) || a.name.localeCompare(b.name)
+  );
+  return (
+    <div className="section">
+      <div className="card">
+        <div className="flex-between mb-8">
+          <div className="card-title">// Registered Participants ({appState.participants.length})</div>
+          <div className="gap-8">
+            {TEAMS.map((t) => {
+              const meta = TEAM_META[t];
+              const n = appState.participants.filter((p) => p.team === t).length;
+              return (
+                <span key={t} style={{ fontSize: 11, color: meta.cssVar }}>
+                  {meta.icon} {n} {t}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+        {appState.participants.length === 0 ? (
+          <div className="no-url">No participants registered yet.</div>
+        ) : (
+          <div className="table-wrapper">
+            <table className="participants-table">
+              <thead>
+                <tr>
+                  <th>Handle</th>
+                  <th>Team</th>
+                  <th>Joined</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((p, i) => {
+                  const meta = TEAM_META[p.team];
+                  return (
+                    <tr key={i}>
+                      <td>{p.name}</td>
+                      <td><span className={`team-badge ${meta.color}`}>{p.team}</span></td>
+                      <td style={{ color: "var(--text-dim)", fontSize: 11 }}>
+                        {new Date(p.joinedAt).toLocaleTimeString()}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-red btn-sm"
+                          style={{ padding: "3px 8px", fontSize: 10 }}
+                          onClick={() => onRemove(p.name)}
+                        >
+                          ✕
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── App — state only, no component definitions inside ───────────────────────
 export default function App() {
-  const [view, setView] = useState("participant"); // "participant" | "admin-login" | "admin"
+  const [view, setView] = useState("participant");
   const [adminAuth, setAdminAuth] = useState(false);
-  const [adminTab, setAdminTab] = useState("scoreboard"); // "scoreboard" | "setup" | "participants"
+  const [adminTab, setAdminTab] = useState("scoreboard");
   const [adminPw, setAdminPw] = useState("");
 
-  const [appState, setAppState] = useState(null); // null = loading
-  const [session, setSession] = useState(null);   // { name, team } | null
-
+  const [appState, setAppState] = useState(null);
+  const [session, setSession] = useState(null);
   const [participantName, setParticipantName] = useState("");
   const [participantTeam, setParticipantTeam] = useState("");
 
   const { toast, show: showToast } = useToast();
 
-  // ── Bootstrap: load persisted state ──
   useEffect(() => {
     (async () => {
       const saved = await store.get(STORAGE_KEYS.STATE);
@@ -316,8 +620,12 @@ export default function App() {
     await store.set(STORAGE_KEYS.STATE, next);
   }, []);
 
-  // ── Admin auth ──
-  const handleAdminLogin = () => {
+  const scoreOf = useCallback(
+    (team) => (appState?.scores[team] ?? []).filter(Boolean).length,
+    [appState]
+  );
+
+  const handleAdminLogin = useCallback(() => {
     if (adminPw === ADMIN_PASSWORD) {
       setAdminAuth(true);
       setView("admin");
@@ -325,45 +633,45 @@ export default function App() {
     } else {
       showToast("ACCESS DENIED", "error");
     }
-  };
+  }, [adminPw, showToast]);
 
-  const handleAdminLock = () => {
+  const handleAdminLock = useCallback(() => {
     setAdminAuth(false);
     setAdminPw("");
     setView("participant");
-  };
+  }, []);
 
-  const goAdmin = (tab) => {
+  const goAdmin = useCallback((tab) => {
     setAdminTab(tab);
     setView("admin");
-  };
+  }, []);
 
-  // ── Participant registration ──
-  const handleRegister = async () => {
+  const handleRegister = useCallback(async () => {
     const name = participantName.trim();
     if (!name) { showToast("Enter your handle", "error"); return; }
     if (!participantTeam) { showToast("Select a team", "error"); return; }
     if (appState.participants.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
       showToast("Handle already taken", "error"); return;
     }
-    const newParticipant = { name, team: participantTeam, joinedAt: new Date().toISOString() };
-    const next = { ...appState, participants: [...appState.participants, newParticipant] };
+    const next = {
+      ...appState,
+      participants: [...appState.participants, { name, team: participantTeam, joinedAt: new Date().toISOString() }],
+    };
     await save(next);
     const sess = { name, team: participantTeam };
     setSession(sess);
     await store.set(STORAGE_KEYS.SESSION, sess);
     showToast(`Welcome to team ${participantTeam}!`);
-  };
+  }, [participantName, participantTeam, appState, save, showToast]);
 
-  const handleLeave = async () => {
+  const handleLeave = useCallback(async () => {
     setSession(null);
     setParticipantName("");
     setParticipantTeam("");
     await store.remove(STORAGE_KEYS.SESSION);
-  };
+  }, []);
 
-  // ── Score toggle ──
-  const toggleScore = async (team, roundIdx) => {
+  const handleToggleScore = useCallback(async (team, roundIdx) => {
     const next = {
       ...appState,
       scores: {
@@ -372,29 +680,26 @@ export default function App() {
       },
     };
     await save(next);
-  };
+  }, [appState, save]);
 
-  // ── Active round ──
-  const setActiveRound = async (n) => {
+  const handleSetActiveRound = useCallback(async (n) => {
     await save({ ...appState, activeRound: n });
     showToast(`Round ${n} is now live`);
-  };
+  }, [appState, save, showToast]);
 
-  // ── Round config (local edits, saved explicitly) ──
-  const updateRoundField = (idx, field, value) => {
+  const handleUpdateRoundField = useCallback((idx, field, value) => {
     setAppState((prev) => ({
       ...prev,
       rounds: prev.rounds.map((r, i) => (i === idx ? { ...r, [field]: value } : r)),
     }));
-  };
+  }, []);
 
-  const saveRounds = async () => {
+  const handleSaveRounds = useCallback(async () => {
     await store.set(STORAGE_KEYS.STATE, appState);
     showToast("Configuration saved");
-  };
+  }, [appState, showToast]);
 
-  // ── Reset ──
-  const handleReset = async () => {
+  const handleReset = useCallback(async () => {
     if (!window.confirm("Reset ALL scores, participants and configuration? This cannot be undone.")) return;
     await store.clear();
     setAppState(makeDefaultState());
@@ -402,12 +707,13 @@ export default function App() {
     setParticipantName("");
     setParticipantTeam("");
     showToast("All data reset");
-  };
+  }, [showToast]);
 
-  // ── Derived helpers ──
-  const scoreOf = (team) => (appState?.scores[team] ?? []).filter(Boolean).length;
+  const handleRemoveParticipant = useCallback(async (name) => {
+    await save({ ...appState, participants: appState.participants.filter((p) => p.name !== name) });
+    showToast("Participant removed");
+  }, [appState, save, showToast]);
 
-  // ─── Loading ──────────────────────────────────────────────────────────────
   if (!appState) {
     return (
       <>
@@ -419,377 +725,12 @@ export default function App() {
     );
   }
 
-  const currentRound = appState.rounds[appState.activeRound - 1];
-
-  // ─── Sub-views ────────────────────────────────────────────────────────────
-
-  function ParticipantView() {
-    return (
-      <div>
-        <div className="participant-header">
-          <div className="live-indicator"><div className="live-dot" /> LIVE EVENT</div>
-          <div className="event-title">SECURITY CTF</div>
-          <div className="event-sub">{EVENT_NAME.toUpperCase()} · {EVENT_DATE.toUpperCase()}</div>
-        </div>
-
-        <div className="section" style={{ paddingTop: 0 }}>
-          {!session ? (
-            <RegistrationCard />
-          ) : (
-            <ActivePlayerView />
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  function RegistrationCard() {
-    return (
-      <div className="card">
-        <div className="card-title">// Operator Registration</div>
-        <label className="input-label">Your handle</label>
-        <input
-          className="input mb-8"
-          placeholder="e.g. h4x0r42"
-          value={participantName}
-          onChange={(e) => setParticipantName(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleRegister()}
-          autoComplete="off"
-          spellCheck={false}
-        />
-        <label className="input-label" style={{ marginTop: 16 }}>Choose your team</label>
-        <div className="team-select">
-          {TEAMS.map((t) => {
-            const meta = TEAM_META[t];
-            const count = appState.participants.filter((p) => p.team === t).length;
-            return (
-              <div
-                key={t}
-                className={`team-option ${meta.color} ${participantTeam === t ? "selected" : ""}`}
-                onClick={() => setParticipantTeam(t)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && setParticipantTeam(t)}
-              >
-                <div className="team-icon">{meta.icon}</div>
-                <div className="team-opt-name">{t}</div>
-                <div className="team-count">{count} member{count !== 1 ? "s" : ""}</div>
-              </div>
-            );
-          })}
-        </div>
-        <button className="btn btn-full mt-8" onClick={handleRegister}>
-          ▶ JOIN THE BATTLE
-        </button>
-      </div>
-    );
-  }
-
-  function ActivePlayerView() {
-    const myMeta = TEAM_META[session.team];
-    return (
-      <>
-        {/* Active challenge */}
-        <div className="round-display">
-          <div className="round-display-num">// ACTIVE CHALLENGE — ROUND {appState.activeRound}</div>
-          <div className="round-display-title">
-            {currentRound.title || `Challenge ${appState.activeRound}`}
-          </div>
-          {currentRound.description && (
-            <div className="round-display-desc">{currentRound.description}</div>
-          )}
-          {currentRound.url ? (
-            <a href={currentRound.url} target="_blank" rel="noreferrer" className="track-link-btn">
-              ⇒ OPEN INSTRUQT LAB
-            </a>
-          ) : (
-            <div className="no-url">⏳ Waiting for admin to configure this round…</div>
-          )}
-        </div>
-
-        {/* Standing */}
-        <div className="card">
-          <div className="card-title">// Current Standings</div>
-          <div className="scoreboard">
-            {TEAMS.map((t) => {
-              const meta = TEAM_META[t];
-              return (
-                <div key={t} className={`team-score ${meta.color}`}>
-                  <div className={`team-name ${meta.color}`}>{t}</div>
-                  <div className={`team-number ${meta.color}`}>{scoreOf(t)}</div>
-                  <div className="team-label">/ {NUM_ROUNDS} COMPLETED</div>
-                </div>
-              );
-            })}
-          </div>
-          {TEAMS.map((t) => {
-            const meta = TEAM_META[t];
-            return (
-              <div key={t} style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 10, letterSpacing: 2, color: meta.cssVar, marginBottom: 6 }}>
-                  {t.toUpperCase()}
-                </div>
-                <div className="mini-scores">
-                  {Array.from({ length: NUM_ROUNDS }, (_, i) => (
-                    <div key={i} className={`mini-cell ${appState.scores[t][i] ? `done-${meta.color}` : ""}`}>
-                      {appState.scores[t][i] ? "✓" : `R${i + 1}`}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div style={{ textAlign: "center" }}>
-          <span className="text-dim" style={{ marginRight: 12 }}>
-            Operator: <span style={{ color: myMeta.cssVar }}>{session.name}</span> · {session.team}
-          </span>
-          <button className="btn btn-ghost btn-sm" onClick={handleLeave}>↩ Switch player</button>
-        </div>
-      </>
-    );
-  }
-
-  function AdminLoginView() {
-    return (
-      <div className="login-screen">
-        <div className="login-title">ADMIN ACCESS</div>
-        <div className="login-sub">// SECURE TERMINAL</div>
-        <div className="login-form">
-          <label className="input-label">Password</label>
-          <input
-            className="input"
-            type="password"
-            placeholder="••••••••"
-            value={adminPw}
-            onChange={(e) => setAdminPw(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAdminLogin()}
-            autoFocus
-          />
-          <button className="btn btn-full" onClick={handleAdminLogin}>▶ AUTHENTICATE</button>
-          <button className="btn btn-full btn-ghost" onClick={() => setView("participant")}>↩ Back</button>
-        </div>
-      </div>
-    );
-  }
-
-  function AdminScoreboard() {
-    return (
-      <div className="section">
-        {/* Score summary */}
-        <div className="scoreboard">
-          {TEAMS.map((t) => {
-            const meta = TEAM_META[t];
-            return (
-              <div key={t} className={`team-score ${meta.color}`}>
-                <div className={`team-name ${meta.color}`}>{t}</div>
-                <div className={`team-number ${meta.color}`}>{scoreOf(t)}</div>
-                <div className="team-label">/ {NUM_ROUNDS} ROUNDS</div>
-                <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 8 }}>
-                  {appState.participants.filter((p) => p.team === t).length} members
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Active round control */}
-        <div className="card">
-          <div className="flex-between mb-8">
-            <div className="card-title">// Active Round</div>
-            <div className="gap-8">
-              {Array.from({ length: NUM_ROUNDS }, (_, i) => (
-                <button
-                  key={i}
-                  className={`btn btn-sm ${appState.activeRound === i + 1 ? "" : "btn-ghost"}`}
-                  onClick={() => setActiveRound(i + 1)}
-                >
-                  R{i + 1}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="text-dim">
-            Round <span className="text-green">{appState.activeRound}</span>
-            {" · "}{currentRound.title || `Challenge ${appState.activeRound}`}
-            {currentRound.url && (
-              <> · <span style={{ color: "var(--green-dim)" }}>
-                {currentRound.url.length > 60 ? currentRound.url.slice(0, 60) + "…" : currentRound.url}
-              </span></>
-            )}
-          </div>
-        </div>
-
-        {/* Completion toggles */}
-        <div className="card">
-          <div className="card-title">// Round Completions — click to toggle</div>
-          <div className="completion-header">
-            <div className="text-dim">ROUND</div>
-            <div style={{ fontSize: 10, letterSpacing: 2, color: "var(--orange)" }}>PENTESTERS</div>
-            <div style={{ fontSize: 10, letterSpacing: 2, color: "var(--cyan)" }}>DEFENDERS</div>
-          </div>
-          {appState.rounds.map((r, i) => (
-            <div key={i} className="completion-row">
-              <div style={{ fontSize: 12, color: appState.activeRound === i + 1 ? "var(--green)" : "var(--text-dim)" }}>
-                {appState.activeRound === i + 1 ? "▶ " : "   "}R{i + 1}
-                {r.title ? ` · ${r.title.slice(0, 18)}` : ""}
-              </div>
-              {TEAMS.map((t) => {
-                const done = appState.scores[t][i];
-                const meta = TEAM_META[t];
-                return (
-                  <button
-                    key={t}
-                    className={`check-btn ${done ? `done-${meta.color}` : "undone"}`}
-                    onClick={() => toggleScore(t, i)}
-                  >
-                    {done ? "✓ DONE" : "○ PENDING"}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  function AdminSetup() {
-    return (
-      <div className="section">
-        <div className="card">
-          <div className="card-title">// Track Configuration</div>
-          <p className="text-dim mb-16">
-            Paste your Instruqt track URLs and titles. Changes are local until you click Save.
-          </p>
-          <div className="setup-grid">
-            {appState.rounds.map((r, i) => (
-              <div key={i} className="round-setup">
-                <div className="round-setup-header">
-                  <div className="round-num-badge">R{i + 1}</div>
-                  <input
-                    className="input"
-                    style={{ flex: 1 }}
-                    placeholder="Challenge title"
-                    value={r.title}
-                    onChange={(e) => updateRoundField(i, "title", e.target.value)}
-                  />
-                </div>
-                <div className="round-fields">
-                  <div className="field-row">
-                    <div>
-                      <label className="input-label">Instruqt Track URL</label>
-                      <input
-                        className="input"
-                        placeholder="https://play.instruqt.com/..."
-                        value={r.url}
-                        onChange={(e) => updateRoundField(i, "url", e.target.value)}
-                        spellCheck={false}
-                      />
-                    </div>
-                    <div>
-                      <label className="input-label">Short description (optional)</label>
-                      <input
-                        className="input"
-                        placeholder="What will participants do?"
-                        value={r.description}
-                        onChange={(e) => updateRoundField(i, "description", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button className="btn btn-full mt-16" onClick={saveRounds}>▶ SAVE CONFIGURATION</button>
-        </div>
-
-        <div className="card">
-          <div className="card-title">// Danger Zone</div>
-          <p className="text-dim mb-16">Resets all scores, participants, and configuration.</p>
-          <button className="btn btn-red btn-sm" onClick={handleReset}>⚠ RESET ALL DATA</button>
-        </div>
-      </div>
-    );
-  }
-
-  function AdminParticipants() {
-    const sorted = [...appState.participants].sort((a, b) => a.team.localeCompare(b.team) || a.name.localeCompare(b.name));
-    const removeParticipant = async (name) => {
-      await save({ ...appState, participants: appState.participants.filter((p) => p.name !== name) });
-      showToast("Participant removed");
-    };
-    return (
-      <div className="section">
-        <div className="card">
-          <div className="flex-between mb-8">
-            <div className="card-title">// Registered Participants ({appState.participants.length})</div>
-            <div className="gap-8">
-              {TEAMS.map((t) => {
-                const meta = TEAM_META[t];
-                const n = appState.participants.filter((p) => p.team === t).length;
-                return (
-                  <span key={t} style={{ fontSize: 11, color: meta.cssVar }}>
-                    {meta.icon} {n} {t}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-          {appState.participants.length === 0 ? (
-            <div className="no-url">No participants registered yet.</div>
-          ) : (
-            <div className="table-wrapper">
-              <table className="participants-table">
-                <thead>
-                  <tr>
-                    <th>Handle</th>
-                    <th>Team</th>
-                    <th>Joined</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sorted.map((p, i) => {
-                    const meta = TEAM_META[p.team];
-                    return (
-                      <tr key={i}>
-                        <td>{p.name}</td>
-                        <td><span className={`team-badge ${meta.color}`}>{p.team}</span></td>
-                        <td style={{ color: "var(--text-dim)", fontSize: 11 }}>
-                          {new Date(p.joinedAt).toLocaleTimeString()}
-                        </td>
-                        <td>
-                          <button
-                            className="btn btn-red btn-sm"
-                            style={{ padding: "3px 8px", fontSize: 10 }}
-                            onClick={() => removeParticipant(p.name)}
-                          >
-                            ✕
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <>
       <style>{css}</style>
       <div className="scanline" aria-hidden="true" />
       <div className="noise" aria-hidden="true" />
       <div className="app">
-
-        {/* Header */}
         <header className="header">
           <div className="header-logo">
             <div className="logo-mark" aria-hidden="true">CTF</div>
@@ -799,10 +740,7 @@ export default function App() {
             </div>
           </div>
           <nav className="header-nav" aria-label="Main navigation">
-            <button
-              className={`nav-btn ${view === "participant" ? "active" : ""}`}
-              onClick={() => setView("participant")}
-            >
+            <button className={`nav-btn ${view === "participant" ? "active" : ""}`} onClick={() => setView("participant")}>
               Participant
             </button>
             {!adminAuth ? (
@@ -818,16 +756,52 @@ export default function App() {
           </nav>
         </header>
 
-        {/* Content */}
         <main>
-          {view === "participant" && <ParticipantView />}
-          {view === "admin-login" && <AdminLoginView />}
-          {view === "admin" && adminAuth && adminTab === "scoreboard" && <AdminScoreboard />}
-          {view === "admin" && adminAuth && adminTab === "setup" && <AdminSetup />}
-          {view === "admin" && adminAuth && adminTab === "participants" && <AdminParticipants />}
+          {view === "participant" && (
+            <ParticipantView
+              appState={appState}
+              session={session}
+              scoreOf={scoreOf}
+              participantName={participantName}
+              setParticipantName={setParticipantName}
+              participantTeam={participantTeam}
+              setParticipantTeam={setParticipantTeam}
+              onRegister={handleRegister}
+              onLeave={handleLeave}
+            />
+          )}
+          {view === "admin-login" && (
+            <AdminLoginView
+              adminPw={adminPw}
+              setAdminPw={setAdminPw}
+              onLogin={handleAdminLogin}
+              onBack={() => setView("participant")}
+            />
+          )}
+          {view === "admin" && adminAuth && adminTab === "scoreboard" && (
+            <AdminScoreboard
+              appState={appState}
+              scoreOf={scoreOf}
+              onSetActiveRound={handleSetActiveRound}
+              onToggleScore={handleToggleScore}
+            />
+          )}
+          {view === "admin" && adminAuth && adminTab === "setup" && (
+            <AdminSetup
+              appState={appState}
+              onUpdateRoundField={handleUpdateRoundField}
+              onSave={handleSaveRounds}
+              onReset={handleReset}
+            />
+          )}
+          {view === "admin" && adminAuth && adminTab === "participants" && (
+            <AdminParticipants
+              appState={appState}
+              onRemove={handleRemoveParticipant}
+            />
+          )}
         </main>
 
-        {/* Toast */}
         {toast && (
           <div role="alert" className={`toast ${toast.type === "error" ? "error" : ""}`}>
             {toast.msg}

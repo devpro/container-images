@@ -1,25 +1,31 @@
-root = true
+﻿root = true
 
 [*]
-charset = utf-8-bom
 end_of_line = lf
-indent_style = space
 insert_final_newline = true
-trim_trailing_whitespace = true
 
-[*.{xml,config,conf,*proj,nuspec,props,resx,targets,yml,tasks,json,md,ts}]
+[*.{config,conf,csproj,js,json,nuspec,props,resx,targets,tasks,ts,xml,yml}]
 indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
 
 [*.cs]
 dotnet_sort_system_directives_first = true
 indent_size = 4
+indent_style = space
+trim_trailing_whitespace = true
 
-[*.php]
+[*.{php,py}]
 indent_size = 4
+indent_style = space
+trim_trailing_whitespace = true
 
 [*.go]
+indent_size = 4
 indent_style = tab
-indent_size = 4
+trim_trailing_whitespace = true
 
-[*.py]
-indent_size = 4
+[*.md]
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = false
