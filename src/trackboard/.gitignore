@@ -25,3 +25,6 @@ coverage/
 
 # Temporary
 *.tmp
+
+# Runtime data (persisted via PVC in K8s, not committed)
+data/state.json

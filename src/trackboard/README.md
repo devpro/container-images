@@ -1,151 +1,149 @@
-﻿# Track board
+# Track board — CTF Events Companion
 
 A lightweight, production-grade web app for running a an event using tracks.
 
-Built with **React + Vite**, served by a hardened **nginx** container, deployed on **Kubernetes**.
+**Stack:** React + Vite (frontend) · Express (API) · JSON file on a PVC (state)
 
----
+## Event structure
 
-## Features
+Round | Group A track | Group B track
+------|---------------|--------------
+1     | 🔵 Blue Team  | 🔴 Red Team
+2     | 🔴 Red Team   | 🔵 Blue Team
+3     | 🔵 Blue Team  | 🔴 Red Team
 
-Role        | Capabilities
-------------|----------------------------------------------------------------------------------------------------------------
-Participant | Register a handle, pick a team, see the active Instruqt track link, follow the live scoreboard
-Admin       | Configure 6 track URLs, control which round is live, toggle completions per team, review the participant roster
+**Score** = number of participants who completed their track per round (entered manually by admin from the Instruqt dashboard).
+The scoreboard shows per-round counts and cumulative totals for Group A vs Group B.
 
----
-
-## Project Structure
+## Project structure
 
 ```txt
+├── server/
+│   └── index.js          # Express API — state, scores, participants
 ├── src/
-│   ├── main.jsx          # React entry point
-│   ├── index.css         # Global reset
-│   ├── App.jsx           # Main component & all views
-│   ├── constants.js      # Config, env vars, default state
-│   └── storage.js        # localStorage wrapper (async, namespaced)
-├── nginx/
-│   ├── nginx.conf        # Worker config, JSON access log
-│   └── default.conf      # Vhost, security headers, SPA routing, health endpoint
-├── k8s/
-│   ├── namespace.yaml
-│   ├── deployment.yaml   # Non-root, read-only FS, resource limits, probes
-│   ├── service.yaml
-│   ├── ingress.yaml      # TLS via cert-manager
-│   ├── hpa.yaml          # Autoscaling (2–5 replicas)
-│   ├── pdb.yaml          # PodDisruptionBudget (minAvailable: 1)
-│   └── networkpolicy.yaml
-├── .github/workflows/
-│   └── ci.yaml           # Lint → Build → Docker push → K8s deploy
-├── Dockerfile            # Multi-stage: deps → builder → nginx:alpine
-└── vite.config.js
+│   ├── main.jsx           # React entry point
+│   ├── index.css          # Global reset
+│   ├── App.jsx            # All views: participant, scoreboard, admin
+│   ├── api.js             # Fetch wrappers for /api/*
+│   └── constants.js       # Group/track config, poll interval
+├── data/
+│   └── state.json         # Runtime state (gitignored, mounted via PVC)
+├── Dockerfile             # Multi-stage: deps → build → node:alpine runtime
+└── vite.config.js         # Proxies /api → localhost:3000 in dev
 ```
 
----
+## Local development
 
-## Local Development
+Install packages:
 
 ```bash
 npm install
-
-npm run dev
-echo http://localhost:5173
-
-npm run lint
-npm run format
 ```
 
-### Environment variables
-
-All vars are prefixed `VITE_` and baked into the bundle at build time.
-
-Variable              | Default            | Description
-----------------------|--------------------|-----------------------------------------
-`VITE_EVENT_NAME`     | `DevOpsDay Geneva` | Shown in the header
-`VITE_EVENT_DATE`     | `May 2026`         | Shown in the subtitle
-`VITE_NUM_ROUNDS`     | `6`                | Number of CTF rounds
-`VITE_ADMIN_PASSWORD` | `devopsday2026`    | Admin panel password — **override this**
-
-Create a `.env.local` for local overrides (never committed):
+Starts local development server - Concurrent run with Express (port 3000) and Vite dev server (port 5173):
 
 ```bash
-VITE_ADMIN_PASSWORD=mysecretpassword
+npm run dev
 ```
 
----
+> [!INFO]
+> Vite proxies `/api` requests to the Express server automatically.
+
+Open [http://localhost:5173](http://localhost:5173).
+
+### Environment variables (server)
+
+Set these in your shell or a `.env` file (never committed):
+
+Variable         | Default             | Description
+-----------------|---------------------|---------------------------------------
+`PORT`           | `3000`              | Express listen port
+`DATA_FILE`      | `./data/state.json` | Path to JSON state file
+`ADMIN_PASSWORD` | `devopsday2026`     | Admin panel password — **change this**
+`EVENT_NAME`     | `DevOpsDay Geneva`  | Shown in UI
+`EVENT_DATE`     | `May 2026`          | Shown in UI
 
 ## Docker
 
 ```bash
-docker build --build-arg VITE_ADMIN_PASSWORD=mysecretpassword -t devopsday-ctf:local .
+docker build -t ghcr.io/devpro/trackboard:1.0.0 .
 
-docker run --rm -p 8080:8080 devopsday-ctf:local
-
-echo http://localhost:8080
+docker run --rm -p 3000:3000 \
+  -e ADMIN_PASSWORD=mysecretpassword \
+  -v $(pwd)/data:/app/data \
+  ghcr.io/devpro/trackboard:1.0.0
 ```
 
-The image:
+Open [localhost:3000](http://localhost:3000).
 
-- Runs as **non-root** (`nginx` user, UID 101)
-- Uses a **read-only filesystem** (writable emptyDirs for nginx cache/tmp)
-- Exposes port **8080** (not 80, so no root needed)
-- Has a `/healthz` endpoint for probes
+The `-v $(pwd)/data:/app/data` mount persists state across container restarts.
+In Kubernetes this is a PVC (see below).
 
 ---
 
-## Kubernetes Deployment
+## Kubernetes
 
-### Prerequisites
+The app needs one environment variable as a Secret and a PersistentVolumeClaim for state.
 
-- A running K8s cluster
-- `kubectl` configured
-- An ingress controller (nginx-ingress assumed; adjust annotations in `ingress.yaml`)
-- `cert-manager` for TLS (or remove TLS block and manage certs yourself)
+### Secret
 
-### Required secrets in GitHub Actions
-
-Secret                | Description
-----------------------|-------------------------------------------
-`VITE_ADMIN_PASSWORD` | Baked into the Docker image at build time
-`KUBECONFIG`          | Base64-encoded kubeconfig for your cluster
-
-### Manual deploy
-
-```bash
-# 1. Update image in deployment.yaml, then:
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/
-
-# 2. Watch rollout
-kubectl rollout status deployment/ctf-app -n ctf
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ctf-secret
+  namespace: ctf
+type: Opaque
+stringData:
+  ADMIN_PASSWORD: "your-strong-password"
+  EVENT_NAME: "DevOpsDay Geneva"
+  EVENT_DATE: "May 2026"
 ```
 
-### Update the domain
+### PersistentVolumeClaim
 
-Edit `k8s/ingress.yaml` and replace `ctf.yourdomain.com` with your actual hostname.
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ctf-data
+  namespace: ctf
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 100Mi
+```
+
+### Deployment snippet (env + volume)
+
+```yaml
+envFrom:
+  - secretRef:
+      name: ctf-secret
+env:
+  - name: DATA_FILE
+    value: /app/data/state.json
+
+volumeMounts:
+  - name: data
+    mountPath: /app/data
+
+volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: ctf-data
+```
+
+> Because state is on a PVC with `ReadWriteOnce`, keep `replicas: 1`. The app is stateful — multiple replicas would race on the file.
 
 ---
 
-## Before the Event Checklist
+## Before the event checklist
 
-- [ ] Set `VITE_ADMIN_PASSWORD` in GitHub Secrets (not the default)
-- [ ] Update `ctf.yourdomain.com` in `k8s/ingress.yaml`
-- [ ] Update `YOUR_ORG` in `k8s/deployment.yaml` image reference
-- [ ] Push to `main` — CI builds and deploys automatically
-- [ ] Open the app, go to **Admin → Setup**, paste all 6 Instruqt track URLs
-- [ ] On event day: open **Admin → Scores** on your laptop, project **Participant** view on screen
-
----
-
-## State & Persistence
-
-All state (track config, scores, participants) is stored in **`localStorage`** under the `ctf:` namespace. This means:
-
-- State persists across browser refreshes
-- State is **per-browser** — if you need shared state across devices, the `storage.js` module is designed as a drop-in: replace the `localStorage` calls with API calls to a backend
-
----
-
-## License
-
-GPL-3.0
+- [ ] Set `ADMIN_PASSWORD` in the K8s Secret
+- [ ] Deploy and open the app
+- [ ] Admin → Setup: paste all 6 Instruqt track URLs (Blue + Red per round) and titles
+- [ ] Open `📺 Scoreboard` in a browser tab and put it fullscreen on the room projector
+- [ ] Keep Admin → Scores open on your laptop
+- [ ] As each round completes, check Instruqt dashboard for completion counts and enter them with the +/− steppers
