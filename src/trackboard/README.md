@@ -63,7 +63,7 @@ Variable         | Default             | Description
 `EVENT_NAME`     | `DevOpsDay Geneva`  | Shown in UI
 `EVENT_DATE`     | `May 2026`          | Shown in UI
 
-## Docker
+## Packaging
 
 Build a new container image:
 
@@ -85,66 +85,6 @@ docker run --rm -p 3000:3000 \
 > In Kubernetes this is a PVC (see below).
 
 Open [localhost:3000](http://localhost:3000).
-
----
-
-## Kubernetes
-
-The app needs one environment variable as a Secret and a PersistentVolumeClaim for state.
-
-### Secret
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ctf-secret
-  namespace: ctf
-type: Opaque
-stringData:
-  ADMIN_PASSWORD: "your-strong-password"
-  EVENT_NAME: "DevOpsDay Geneva"
-  EVENT_DATE: "May 2026"
-```
-
-### PersistentVolumeClaim
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: ctf-data
-  namespace: ctf
-spec:
-  accessModes: [ReadWriteOnce]
-  resources:
-    requests:
-      storage: 100Mi
-```
-
-### Deployment snippet (env + volume)
-
-```yaml
-envFrom:
-  - secretRef:
-      name: ctf-secret
-env:
-  - name: DATA_FILE
-    value: /app/data/state.json
-
-volumeMounts:
-  - name: data
-    mountPath: /app/data
-
-volumes:
-  - name: data
-    persistentVolumeClaim:
-      claimName: ctf-data
-```
-
-> Because state is on a PVC with `ReadWriteOnce`, keep `replicas: 1`. The app is stateful — multiple replicas would race on the file.
-
----
 
 ## Before the event checklist
 
