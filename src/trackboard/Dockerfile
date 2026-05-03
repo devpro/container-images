@@ -36,11 +36,11 @@ USER node
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=15s --timeout=5s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost:3000/healthz || exit 1
+# HEALTHCHECK --interval=15s --timeout=5s --start-period=5s --retries=3 \
+#     CMD wget -qO- http://localhost:3000/healthz || exit 1
 
 ENV NODE_ENV=production \
-  PORT=3000 \
-  DATA_FILE=/app/data/state.json
+    PORT=3000 \
+    DATA_FILE=/app/data/state.json
 
 CMD ["node", "server/index.js"]

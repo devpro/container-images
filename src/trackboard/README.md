@@ -40,7 +40,7 @@ Install packages:
 npm install
 ```
 
-Starts local development server - Concurrent run with Express (port 3000) and Vite dev server (port 5173):
+Starts local development server — Concurrent run with Express (port 3000) and Vite dev server (port 5173):
 
 ```bash
 npm run dev
@@ -65,19 +65,26 @@ Variable         | Default             | Description
 
 ## Docker
 
+Build a new container image:
+
 ```bash
 docker build -t ghcr.io/devpro/trackboard:1.0.0 .
+```
 
+Test the image:
+
+```bash
 docker run --rm -p 3000:3000 \
   -e ADMIN_PASSWORD=mysecretpassword \
   -v $(pwd)/data:/app/data \
   ghcr.io/devpro/trackboard:1.0.0
 ```
 
-Open [localhost:3000](http://localhost:3000).
+> [!INFO]
+> The `-v $(pwd)/data:/app/data` mount persists state across container restarts.
+> In Kubernetes this is a PVC (see below).
 
-The `-v $(pwd)/data:/app/data` mount persists state across container restarts.
-In Kubernetes this is a PVC (see below).
+Open [localhost:3000](http://localhost:3000).
 
 ---
 
