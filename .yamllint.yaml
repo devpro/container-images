@@ -1,0 +1,16 @@
+extends: default
+# ref. https://yamllint.readthedocs.io/en/stable/configuration.html
+ignore:
+  - 'samples/**'
+  - 'node_modules/**'
+rules:
+  document-start: disable
+  line-length:
+    level: warning
+    max: 170
+  truthy: disable
+  indentation:
+    spaces: 2
+    indent-sequences: whatever
+  brackets:
+    max-spaces-inside: 1
