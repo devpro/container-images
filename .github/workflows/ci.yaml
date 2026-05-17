@@ -26,7 +26,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v6
-        # TODO: secure and optimize
+    
+    # TODO: secure first
     #   - name: Build container images from sources
     #     run: |
     #       cd src/game-2048

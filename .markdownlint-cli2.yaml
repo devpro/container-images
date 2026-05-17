@@ -1,6 +1,6 @@
 gitignore: true
 ignores:
-  - "**/node_modules/**"
+  - "./samples/**"
 config:
   default: true
   MD013:

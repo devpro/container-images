@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v6
-        # TODO: secure and optimize
+    
+    # TODO: secure first
     #   - name: Login to container registry
     #     uses: docker/login-action@v3
     #     with:
