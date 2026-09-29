@@ -2,6 +2,7 @@
 
 ARG NODE_VERSION=22
 ARG NPM_VERSION=11
+ARG PNPM_VERSION=11
 ARG DOCKER_VERSION=29
 ARG TERRAFORM_VERSION=1.16
 
@@ -12,6 +13,7 @@ FROM hashicorp/terraform:${TERRAFORM_VERSION} AS terraform
 FROM node:${NODE_VERSION}-trixie-slim
 
 ARG NPM_VERSION
+ARG PNPM_VERSION
 
 # pipx backs `pipx run yamllint` and `pipx run checkov`, git is what every checkout and change detection step calls.
 # curl and unzip are what the Syft, Trivy, Terraform and TFLint composite actions download their pinned release with.
@@ -21,7 +23,8 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # The npm bundled with Node lags behind its own dependency fixes, which an image scan reports.
-RUN npm install -g npm@${NPM_VERSION} \
+# pnpm stands in for `pnpm/action-setup`, which a container job does without.
+RUN npm install -g npm@${NPM_VERSION} pnpm@${PNPM_VERSION} \
   && npm cache clean --force
 
 # The Docker client, buildx and compose let a job build an image against the host daemon socket, as an end to end test or an image scan does.
