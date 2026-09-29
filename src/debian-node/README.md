@@ -9,6 +9,8 @@ Node.js environment for building, testing and linting, in a CI job or on a works
 - Docker client, buildx and compose, to reach a Docker daemon through its socket
 - Terraform
 
+Steps run as `runner` (uid 1000), not root.
+
 ## Usage
 
 ```bash

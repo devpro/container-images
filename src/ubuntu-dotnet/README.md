@@ -10,6 +10,8 @@
 
 A database is given to a job as a service container (`mongo:8`), not installed in the image.
 
+Steps run as `runner` (uid 1000), not root.
+
 ## Usage
 
 ```bash

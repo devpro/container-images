@@ -34,3 +34,9 @@ COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-compose /usr/loc
 
 # A container job gets no `hashicorp/setup-terraform`, so a Node project generating Terraform finds it here.
 COPY --from=terraform /bin/terraform /usr/local/bin/terraform
+
+# Steps run as an ordinary user, as on a hosted runner, which keeps a job from owning the machine it runs on.
+# The uid is 1000, the first user of a Linux or WSL host, so a workspace that user created is writable from inside.
+RUN usermod --login runner --home /home/runner --move-home node \
+  && groupmod --new-name runner node
+USER runner

@@ -15,3 +15,9 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=terraform /bin/terraform /usr/local/bin/terraform
+
+# Steps run as an ordinary user, as on a hosted runner, which keeps a job from owning the machine it runs on.
+# The uid is 1000, the first user of a Linux or WSL host, so a workspace that user created is writable from inside.
+RUN usermod --login runner --home /home/runner --move-home --groups '' ubuntu \
+  && groupmod --new-name runner ubuntu
+USER runner
