@@ -16,11 +16,11 @@ ARG NPM_VERSION
 ARG PNPM_VERSION
 
 # pipx backs `pipx run yamllint` and `pipx run checkov`, git is what every checkout and change detection step calls, and jq is what scripts read JSON with, as on a hosted runner.
-# curl and unzip are what the Syft, Trivy, Terraform and TFLint composite actions download their pinned release with.
+# curl and unzip are what the Syft, Trivy, Terraform and TFLint composite actions download their pinned release with, and zip is what tests packing an archive call.
 # sudo is what those actions install the binary with, written for a hosted runner, and root runs it without a password.
 # g++ and make build the native modules an npm install compiles when no prebuilt binary matches, as on a hosted runner.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl g++ git jq make pipx sudo unzip \
+  && apt-get install -y --no-install-recommends ca-certificates curl g++ git jq make pipx sudo unzip zip \
   && rm -rf /var/lib/apt/lists/*
 
 # The npm bundled with Node lags behind its own dependency fixes, which an image scan reports.
