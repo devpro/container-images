@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   push:
@@ -20,6 +20,21 @@ jobs:
   content-validate:
     name: Markup
     uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@fcf685247a8fa35a4330f3bbc9c328f13fec7e73
+
+  runner-image-scan:
+    name: "Image ${{ matrix.image-name }}"
+    strategy:
+      matrix:
+        image-name:
+          - debian-node
+          - ubuntu-dotnet
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@58dbfe0e9927f2191796ac616a4bb43126e59d98
+    with:
+      image-definition: src/${{ matrix.image-name }}/Dockerfile
+      image-name: ${{ matrix.image-name }}
+      image-path: ghcr.io/${{ github.repository_owner }}
+      image-tag: "1.0.${{ github.run_id }}"
+      workflow-parts-version: 58dbfe0e9927f2191796ac616a4bb43126e59d98
 
   image-scan:
     runs-on: ubuntu-latest

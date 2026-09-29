@@ -1,4 +1,4 @@
-﻿# ASP.NET Core Web application sample
+# ASP.NET Core Web application sample
 
 ## How to build with Docker
 

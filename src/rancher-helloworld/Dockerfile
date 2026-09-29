@@ -1,4 +1,4 @@
-﻿FROM registry.suse.com/bci/golang:1.26 as build
+FROM registry.suse.com/bci/golang:1.26 as build
 COPY . /go/src
 WORKDIR /go/src
 RUN go build

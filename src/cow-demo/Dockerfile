@@ -1,4 +1,4 @@
-﻿#FROM registry.suse.com/bci/nodejs:20 as buildjs
+#FROM registry.suse.com/bci/nodejs:20 as buildjs
 #COPY . /usr/src
 #WORKDIR /usr/src/ui
 #RUN npm install

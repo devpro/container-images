@@ -1,4 +1,4 @@
-﻿# Tiny File Manager
+# Tiny File Manager
 
 Distribution of [tinyfilemanager.github.io](https://tinyfilemanager.github.io/) for security workshops.
 

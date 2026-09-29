@@ -1,4 +1,4 @@
-﻿FROM php:7.4.26-apache-buster
+FROM php:7.4.26-apache-buster
 
 # Buster is EOL — point to the archive mirror
 RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \

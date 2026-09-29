@@ -1,4 +1,4 @@
-﻿FROM registry.suse.com/bci/python:3.13
+FROM registry.suse.com/bci/python:3.13
 
 WORKDIR /app
 
