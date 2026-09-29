@@ -1,0 +1,11 @@
+# IstarCI configuration, read from the root of the repository.
+
+runner:
+  image: ghcr.io/devpro/debian-node:latest
+  # The scan jobs build an image and scan it through the host Docker daemon.
+  docker: true
+
+workflow:
+  # Delivery publishes on a push to the default branch, which a local run must never reach.
+  exclude:
+    - pkg.yaml

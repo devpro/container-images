@@ -1,0 +1,23 @@
+version: '3'
+
+vars:
+  REGISTRY: ghcr.io/devpro
+  # Development environment images, each built from src/<name>.
+  IMAGES: debian-node ubuntu-dotnet
+
+tasks:
+
+  default:
+    cmds:
+      - task --list
+
+  build:
+    desc: Build the development environment images, tagged as published so a local pipeline finds them without a pull
+    cmds:
+      - for: { var: IMAGES }
+        cmd: docker build -t {{.REGISTRY}}/{{.ITEM}}:latest src/{{.ITEM}}
+
+  ci:
+    desc: Run the CI pipeline of the last commit in containers with IstarCI (clone in ISTARCI_DIR, default ~/repos/istarci)
+    cmds:
+      - '"${ISTARCI_DIR:-$HOME/repos/istarci}/scripts/check_repo.sh" "{{.ROOT_DIR}}" --timeout 1800 {{.CLI_ARGS}}'
