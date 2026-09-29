@@ -1,0 +1,5 @@
+# Read by Trivy from the directory it scans from, which is the repository root in the scan job.
+# Each entry names a finding with no release to move to yet, and is removed once there is one.
+
+# moby/go-archive in docker-buildx 0.37.1, the latest release (2026-09-29)
+CVE-2026-17106

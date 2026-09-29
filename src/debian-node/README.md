@@ -6,7 +6,7 @@ Node.js environment for building, testing and linting, in a CI job or on a works
 
 - Node.js 22 on Debian slim (`node:22-trixie-slim`)
 - git, curl, unzip, sudo, pipx (for `pipx run yamllint` and `pipx run checkov`)
-- Docker client and buildx, to reach a Docker daemon through its socket
+- Docker client, buildx and compose, to reach a Docker daemon through its socket
 - Terraform
 
 ## Usage
