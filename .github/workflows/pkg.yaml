@@ -17,7 +17,7 @@ jobs:
         image-name:
           - debian-node
           - ubuntu-dotnet
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@58dbfe0e9927f2191796ac616a4bb43126e59d98
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@48f6e55c5e4ea9ab4db60e66bc385a8f8dc36f8a
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -26,7 +26,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 58dbfe0e9927f2191796ac616a4bb43126e59d98
+      workflow-parts-version: 48f6e55c5e4ea9ab4db60e66bc385a8f8dc36f8a
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
