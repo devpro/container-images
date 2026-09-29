@@ -14,7 +14,7 @@ tasks:
   build:
     desc: Build the development environment images, tagged as published so a local pipeline finds them without a pull
     cmds:
-      - for: { var: IMAGES }
+      - for: {var: IMAGES}
         cmd: docker build -t {{.REGISTRY}}/{{.ITEM}}:latest src/{{.ITEM}}
 
   ci:

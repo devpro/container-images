@@ -6,6 +6,7 @@
 
 - .NET SDK 10.0 (`mcr.microsoft.com/dotnet/sdk:10.0`, Ubuntu based)
 - OpenJDK 21 JRE, for the Sonar scanner
+- sudo, which shared actions install binaries with
 - Terraform
 
 A database is given to a job as a service container (`mongo:8`), not installed in the image.
