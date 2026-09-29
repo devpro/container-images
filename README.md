@@ -10,6 +10,7 @@ Container image definitions to provide examples & best pratices, and push images
 Published on `ghcr.io/devpro`, one image per language, with the tooling its build, test and lint steps call.
 
 * [Debian Node](src/debian-node/README.md)
+* [Debian Node Playwright](src/debian-node-playwright/README.md)
 * [Ubuntu .NET](src/ubuntu-dotnet/README.md)
 
 Go has none: the official `golang:<version>-trixie` image already carries git, curl and a C toolchain.

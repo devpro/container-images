@@ -3,7 +3,7 @@ version: '3'
 vars:
   REGISTRY: ghcr.io/devpro
   # Development environment images, each built from src/<name>.
-  IMAGES: debian-node ubuntu-dotnet
+  IMAGES: debian-node debian-node-playwright ubuntu-dotnet
 
 tasks:
 

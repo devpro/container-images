@@ -31,6 +31,29 @@ jobs:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
+  # Built on the debian-node image published by the job before, in this same run.
+  runner-image-publication-playwright:
+    name: "Image debian-node-playwright"
+    needs: runner-image-publication
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@00907950b2c345e8ad6934b07268cef056d50d86
+    with:
+      container-registry: ghcr.io
+      create-latest: ${{ github.ref_name == 'main' }}
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:1.0.${{ github.run_id }}
+      image-definition: src/debian-node-playwright/Dockerfile
+      image-name: debian-node-playwright
+      image-path: ghcr.io/${{ github.repository_owner }}
+      image-tag: "1.0.${{ github.run_id }}"
+      image-platform: linux/amd64
+      workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86
+    secrets:
+      container-registry-username: ${{ github.actor }}
+      container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     runs-on: ubuntu-latest
     steps:
