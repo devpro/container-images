@@ -18,7 +18,9 @@ ARG PNPM_VERSION
 # pipx backs `pipx run yamllint` and `pipx run checkov`, git is what every checkout and change detection step calls, and jq is what scripts read JSON with, as on a hosted runner.
 # curl and unzip are what the Syft, Trivy, Terraform and TFLint composite actions download their pinned release with, and zip is what tests packing an archive call.
 # g++ and make build the native modules an npm install compiles when no prebuilt binary matches, as on a hosted runner.
+# The Node image is rebuilt less often than Debian publishes security fixes, which an image scan reports.
 RUN apt-get update \
+  && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends ca-certificates curl g++ git jq make pipx unzip zip \
   && rm -rf /var/lib/apt/lists/*
 

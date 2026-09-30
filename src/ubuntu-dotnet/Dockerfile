@@ -10,7 +10,9 @@ FROM hashicorp/terraform:${TERRAFORM_VERSION} AS terraform
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}
 
 # The Sonar scanner runs on Java, which a setup action installs on a hosted runner and a container job does without.
+# The SDK image is rebuilt less often than Ubuntu publishes security fixes, which an image scan reports.
 RUN apt-get update \
+  && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends openjdk-21-jre-headless \
   && rm -rf /var/lib/apt/lists/*
 
