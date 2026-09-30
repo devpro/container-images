@@ -19,7 +19,7 @@ permissions:
 jobs:
   content-validate:
     name: Markup
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@00907950b2c345e8ad6934b07268cef056d50d86
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
 
   runner-image-scan:
     name: "Image ${{ matrix.image-name }}"
@@ -29,13 +29,13 @@ jobs:
           - debian-node
           - debian-node-playwright
           - ubuntu-dotnet
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@00907950b2c345e8ad6934b07268cef056d50d86
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
     with:
       image-definition: src/${{ matrix.image-name }}/Dockerfile
       image-name: ${{ matrix.image-name }}
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
-      workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86
+      workflow-parts-version: 35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
 
   image-scan:
     runs-on: ubuntu-latest
