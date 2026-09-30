@@ -27,22 +27,12 @@ jobs:
       matrix:
         image-name:
           - debian-node
+          - debian-node-playwright
           - ubuntu-dotnet
     uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@00907950b2c345e8ad6934b07268cef056d50d86
     with:
       image-definition: src/${{ matrix.image-name }}/Dockerfile
       image-name: ${{ matrix.image-name }}
-      image-path: ghcr.io/${{ github.repository_owner }}
-      image-tag: "1.0.${{ github.run_id }}"
-      workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86
-
-  # Built from the debian-node image last published, since it is not pushed here.
-  runner-image-scan-playwright:
-    name: "Image debian-node-playwright"
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@00907950b2c345e8ad6934b07268cef056d50d86
-    with:
-      image-definition: src/debian-node-playwright/Dockerfile
-      image-name: debian-node-playwright
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86

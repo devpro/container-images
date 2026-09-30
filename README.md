@@ -3,17 +3,13 @@
 [![CI](https://github.com/devpro/container-images/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/devpro/container-images/actions/workflows/ci.yaml)
 [![PKG](https://github.com/devpro/container-images/actions/workflows/pkg.yaml/badge.svg?branch=main)](https://github.com/devpro/container-images/actions/workflows/pkg.yaml)
 
-Container image definitions to provide examples & best pratices, and push images on a registry.
+Container images for multiple use cases.
 
 ## Development environments
 
-Published on `ghcr.io/devpro`, one image per language, with the tooling its build, test and lint steps call.
-
-* [Debian Node](src/debian-node/README.md)
-* [Debian Node Playwright](src/debian-node-playwright/README.md)
-* [Ubuntu .NET](src/ubuntu-dotnet/README.md)
-
-Go has none: the official `golang:<version>-trixie` image already carries git, curl and a C toolchain.
+* [JavaScript (Debian)](src/debian-node/README.md)
+* [.NET (Ubuntu)](src/ubuntu-dotnet/README.md)
+* [Playwright (Debian)](src/debian-node-playwright/README.md)
 
 ## Demonstrations
 

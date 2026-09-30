@@ -31,7 +31,6 @@ jobs:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
-  # Built on the debian-node image published by the job before, in this same run.
   runner-image-publication-playwright:
     name: "Image debian-node-playwright"
     needs: runner-image-publication

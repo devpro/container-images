@@ -14,7 +14,6 @@ Linux or WSL2, Docker and `bash`.
   Shell scripts are `snake_case` and committed with the executable bit (`git update-index --chmod=+x`).
 - Documentation is as short as possible.
 - IstarCI is recommended but optional: the CI is the GitHub Actions pipeline, which IstarCI only runs locally first.
-  `task ci:setup`, `task ci` and `task ci:logs` use the installed `@devpro/istarci` package, and a clone of IstarCI is for developing IstarCI only (`task ci:from-clone`).
 
 ## Writing style
 
