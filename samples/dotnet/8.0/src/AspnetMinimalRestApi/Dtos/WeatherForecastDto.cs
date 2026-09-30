@@ -1,4 +1,4 @@
-﻿namespace SuseBci.DotnetSamples.AspnetMinimalRestApi.Dtos
+namespace SuseBci.DotnetSamples.AspnetMinimalRestApi.Dtos
 {
     public record WeatherForecastDto(DateOnly Date, int TemperatureC, string? Summary)
     {

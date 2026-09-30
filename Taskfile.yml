@@ -1,0 +1,38 @@
+version: '3'
+
+vars:
+  REGISTRY: ghcr.io/devpro
+  IMAGES: debian-node debian-node-playwright ubuntu-dotnet
+
+tasks:
+
+  default:
+    cmds:
+      - task --list
+
+  build:
+    desc: Build the development environment images
+    cmds:
+      - for: {var: IMAGES}
+        cmd: docker build -t {{.REGISTRY}}/{{.ITEM}}:latest src/{{.ITEM}}
+
+  ci:setup:
+    desc: Register the repository with the IstarCI daemon and gate git push on its runs
+    cmds:
+      - istarci add "{{.ROOT_DIR}}"
+      - istarci install-hook "{{.ROOT_DIR}}"
+
+  ci:
+    desc: Show the IstarCI runs of the recent commits
+    cmds:
+      - istarci status "{{.ROOT_DIR}}"
+
+  ci:logs:
+    desc: Show the output of the last IstarCI run
+    cmds:
+      - istarci logs "{{.ROOT_DIR}}" {{.CLI_ARGS}}
+
+  ci:from-clone:
+    desc: Run the CI pipeline of the last commit once, from an IstarCI clone
+    cmds:
+      - '"${ISTARCI_DIR:-$HOME/repos/istarci}/scripts/check_repo.sh" "{{.ROOT_DIR}}" --timeout 1800 {{.CLI_ARGS}}'

@@ -1,4 +1,4 @@
-﻿using SuseBci.DotnetSamples.AspnetMinimalRestApi.Dtos;
+using SuseBci.DotnetSamples.AspnetMinimalRestApi.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 

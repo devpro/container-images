@@ -1,4 +1,4 @@
-﻿name: PKG
+name: PKG
 
 on:
   push:
@@ -6,11 +6,58 @@ on:
   workflow_dispatch: {}
 
 jobs:
+  runner-image-publication:
+    name: "Image ${{ matrix.image-name }}"
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      matrix:
+        image-name:
+          - debian-node
+          - ubuntu-dotnet
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@00907950b2c345e8ad6934b07268cef056d50d86
+    with:
+      container-registry: ghcr.io
+      create-latest: ${{ github.ref_name == 'main' }}
+      image-definition: src/${{ matrix.image-name }}/Dockerfile
+      image-name: ${{ matrix.image-name }}
+      image-path: ghcr.io/${{ github.repository_owner }}
+      image-tag: "1.0.${{ github.run_id }}"
+      image-platform: linux/amd64
+      workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86
+    secrets:
+      container-registry-username: ${{ github.actor }}
+      container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+
+  runner-image-publication-playwright:
+    name: "Image debian-node-playwright"
+    needs: runner-image-publication
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@00907950b2c345e8ad6934b07268cef056d50d86
+    with:
+      container-registry: ghcr.io
+      create-latest: ${{ github.ref_name == 'main' }}
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:1.0.${{ github.run_id }}
+      image-definition: src/debian-node-playwright/Dockerfile
+      image-name: debian-node-playwright
+      image-path: ghcr.io/${{ github.repository_owner }}
+      image-tag: "1.0.${{ github.run_id }}"
+      image-platform: linux/amd64
+      workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86
+    secrets:
+      container-registry-username: ${{ github.actor }}
+      container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       # TODO: secure first
       # - name: Login to container registry
       #   uses: docker/login-action@v3

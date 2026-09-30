@@ -1,4 +1,4 @@
-﻿FROM registry.suse.com/bci/nodejs:22 AS deps
+FROM registry.suse.com/bci/nodejs:22 AS deps
 
 WORKDIR /app
 

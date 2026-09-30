@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   push:
@@ -19,13 +19,29 @@ permissions:
 jobs:
   content-validate:
     name: Markup
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@fcf685247a8fa35a4330f3bbc9c328f13fec7e73
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@00907950b2c345e8ad6934b07268cef056d50d86
+
+  runner-image-scan:
+    name: "Image ${{ matrix.image-name }}"
+    strategy:
+      matrix:
+        image-name:
+          - debian-node
+          # - debian-node-playwright
+          - ubuntu-dotnet
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@00907950b2c345e8ad6934b07268cef056d50d86
+    with:
+      image-definition: src/${{ matrix.image-name }}/Dockerfile
+      image-name: ${{ matrix.image-name }}
+      image-path: ghcr.io/${{ github.repository_owner }}
+      image-tag: "1.0.${{ github.run_id }}"
+      workflow-parts-version: 00907950b2c345e8ad6934b07268cef056d50d86
 
   image-scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       # TODO: secure first
       # - name: Build container images from sources
       #   run: |
