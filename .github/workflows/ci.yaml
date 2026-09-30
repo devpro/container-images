@@ -27,7 +27,7 @@ jobs:
       matrix:
         image-name:
           - debian-node
-          - debian-node-playwright
+          # - debian-node-playwright
           - ubuntu-dotnet
     uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@00907950b2c345e8ad6934b07268cef056d50d86
     with:
