@@ -6,8 +6,10 @@
 
 - .NET SDK 10.0 (`mcr.microsoft.com/dotnet/sdk:10.0`, Ubuntu based)
 - OpenJDK 21 JRE, for the Sonar scanner
+- The system libraries Chromium needs, for browser tests with Playwright
 - Terraform
 
+The browser is installed by the project, matching its own Playwright version.
 A database is given to a job as a service container (`mongo:8`), not installed in the image.
 
 Steps run as `runner` (uid 1000), not root.
