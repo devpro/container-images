@@ -1,8 +1,8 @@
 # Node.js environment: markup lint, build, unit and end to end tests, Terraform quality.
 
-ARG NODE_VERSION=22
-ARG NPM_VERSION=11
-ARG PNPM_VERSION=11
+ARG NODE_VERSION=24
+ARG NPM_VERSION=12
+ARG PNPM_VERSION=12
 ARG DOCKER_VERSION=29
 ARG TERRAFORM_VERSION=1.16
 

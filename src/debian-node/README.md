@@ -4,7 +4,7 @@ Node.js environment for building, testing and linting, in a CI job or on a works
 
 ## Content
 
-- Node.js 22 on Debian slim (`node:22-trixie-slim`), npm 11, pnpm 11
+- Node.js 24 on Debian slim (`node:24-trixie-slim`), npm 12, pnpm 12
 - g++, make, git, curl, jq, zip, unzip, pipx (for `pipx run yamllint` and `pipx run checkov`)
 - Docker client, buildx and compose, to reach a Docker daemon through its socket
 - Terraform
