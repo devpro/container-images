@@ -9,7 +9,8 @@ Container images for multiple use cases.
 
 * [JavaScript (Debian)](src/debian-node/README.md)
 * [.NET (Ubuntu)](src/ubuntu-dotnet/README.md)
-* [Playwright (Debian)](src/debian-node-playwright/README.md)
+* [JavaScript and Playwright (Debian)](src/debian-node-playwright/README.md)
+* [.NET and Playwright (Ubuntu)](src/ubuntu-dotnet-playwright/README.md)
 
 ## Demonstrations
 

@@ -29,6 +29,7 @@ jobs:
           - debian-node
           - debian-node-playwright
           - ubuntu-dotnet
+          - ubuntu-dotnet-playwright
     uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
     with:
       image-definition: src/${{ matrix.image-name }}/Dockerfile
