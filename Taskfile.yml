@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   REGISTRY: ghcr.io/devpro
-  IMAGES: debian-node debian-node-playwright ubuntu-dotnet
+  IMAGES: debian-node debian-node-playwright ubuntu-dotnet ubuntu-dotnet-playwright
 
 tasks:
 

@@ -4,7 +4,13 @@
 # moby/go-archive in docker-buildx 0.37.1, the latest release (2026-09-29)
 CVE-2026-17106
 
-# brace-expansion 5.0.9 and undici 6.28.0 bundled in npm 12.1.0, the latest release (2026-09-30)
+# brace-expansion 5.0.9 and undici 6.28.0 bundled in npm 12.2.0, the latest release (2026-09-30), both fixed upstream and not yet taken in by npm
 CVE-2026-102276
 CVE-2026-102278
 CVE-2026-19534
+
+# Go 1.26.8 and golang.org/x/net 0.58 to 0.59 in terraform 1.16.5, docker-buildx 0.38.0 and docker-compose 5.6.0, the latest releases on 2026-10-12
+# The entries expire on their own, so that a release built with Go 1.26.9 and x/net 0.60 is looked for again.
+CVE-2026-78667 exp:2026-11-12
+CVE-2026-78669 exp:2026-11-12
+CVE-2026-97031 exp:2026-11-12

@@ -32,3 +32,4 @@ task ci:logs   # the output of the last run
 
 The image of each job is set in `.istarci.yml`.
 When working on IstarCI itself, `task ci:from-clone` runs the pipeline once from a clone in `~/repos/istarci` or `ISTARCI_DIR`, without the package.
+`istarci status` shows the result of the last run.

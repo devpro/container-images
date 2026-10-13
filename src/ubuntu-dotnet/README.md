@@ -8,7 +8,8 @@
 - OpenJDK 21 JRE, for the Sonar scanner
 - Terraform
 
-A database is given to a job as a service container (`mongo:8`), not installed in the image.
+Browser tests with Playwright run on [Ubuntu .NET Playwright](../ubuntu-dotnet-playwright/README.md).
+A database is started by the job, with the MongoDB action of github-workflow-parts, not installed in the image.
 
 Steps run as `runner` (uid 1000), not root.
 
