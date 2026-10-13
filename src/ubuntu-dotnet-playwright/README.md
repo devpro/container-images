@@ -5,7 +5,7 @@
 ## Content
 
 - Everything in [Ubuntu .NET](../ubuntu-dotnet/README.md)
-- The system libraries the Chromium headless shell needs
+- The system libraries and the font the Chromium headless shell needs
 
 The browser is installed by the project, matching its own Playwright version:
 
