@@ -2,12 +2,14 @@
 # Syft and Trivy are not included: their composite actions download a pinned release with curl, which the SDK image carries.
 
 ARG DOTNET_VERSION=10.0
+# The plain SDK tag leaves the distribution to Microsoft, so the Ubuntu release is named to match the one ubuntu-latest runs.
+ARG UBUNTU_CODENAME=resolute
 ARG TERRAFORM_VERSION=1.16
 
 # Binaries are taken from official images rather than third party apt repositories, so no repository key or package cache lands in a layer.
 FROM hashicorp/terraform:${TERRAFORM_VERSION} AS terraform
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-${UBUNTU_CODENAME}
 
 # The Sonar scanner runs on Java, which a setup action installs on a hosted runner and a container job does without.
 # The SDK image is rebuilt less often than Ubuntu publishes security fixes, which an image scan reports.
