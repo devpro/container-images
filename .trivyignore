@@ -14,3 +14,9 @@ CVE-2026-19534
 CVE-2026-78667 exp:2026-11-12
 CVE-2026-78669 exp:2026-11-12
 CVE-2026-97031 exp:2026-11-12
+
+# System.Security.Cryptography.Pkcs and .Xml 10.0.10 bundled in PowerShell 7.6.7, the latest release (2026-10-13), which the .NET SDK image carries
+CVE-2026-84008 exp:2026-11-14
+CVE-2026-96958 exp:2026-11-14
+CVE-2026-96959 exp:2026-11-14
+CVE-2026-96960 exp:2026-11-14
