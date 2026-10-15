@@ -4,6 +4,7 @@ runner:
   image: ghcr.io/devpro/debian-node:latest
   # The scan jobs build an image and scan it through the host Docker daemon.
   docker: ["runner-image-scan*"]
+
 workflow:
   onDisallowedAction: fail
   # GitHub's own actions, and the composite replacements for every other one kept in github-workflow-parts.
