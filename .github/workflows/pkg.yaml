@@ -3,6 +3,9 @@ name: PKG
 on:
   push:
     branches: ["main"]
+  # A weekly rebuild takes in the base images and the packages published since, which a repository changing rarely would otherwise never get.
+  schedule:
+    - cron: "23 5 * * 1"
   workflow_dispatch: {}
 
 jobs:
