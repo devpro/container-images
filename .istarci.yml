@@ -3,7 +3,7 @@
 runner:
   image: ghcr.io/devpro/debian-node:latest
   # The scan jobs build an image and scan it through the host Docker daemon.
-  docker: true
+  docker: ["runner-image-scan*"]
 
 workflow:
   onDisallowedAction: fail

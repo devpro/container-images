@@ -5,7 +5,7 @@ ARG BASE_IMAGE=ghcr.io/devpro/ubuntu-dotnet:latest
 FROM ${BASE_IMAGE}
 
 # Installing system packages needs root, which a step running as runner does not have, so they are installed here once.
-# The image has no Node to run `playwright install-deps`, so the packages are the ones the Chromium headless shell fails to load without on Ubuntu 24.04.
+# The image has no Node to run `playwright install-deps`, so the packages are the ones the Chromium headless shell fails to load without on Ubuntu 26.04.
 # A font is the one package no library check shows: without one, text takes no space and a test waiting for a heading to be visible fails.
 # The browser itself is left to the job, since each project pins the Playwright version its browser build has to match.
 USER root

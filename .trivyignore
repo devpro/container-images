@@ -4,13 +4,18 @@
 # moby/go-archive in docker-buildx 0.37.1, the latest release (2026-09-29)
 CVE-2026-17106
 
-# brace-expansion 5.0.9 and undici 6.28.0 bundled in npm 12.2.0, the latest release (2026-09-30), both fixed upstream and not yet taken in by npm
-CVE-2026-102276
-CVE-2026-102278
-CVE-2026-19534
-
 # Go 1.26.8 and golang.org/x/net 0.58 to 0.59 in terraform 1.16.5, docker-buildx 0.38.0 and docker-compose 5.6.0, the latest releases on 2026-10-12
 # The entries expire on their own, so that a release built with Go 1.26.9 and x/net 0.60 is looked for again.
 CVE-2026-78667 exp:2026-11-12
 CVE-2026-78669 exp:2026-11-12
 CVE-2026-97031 exp:2026-11-12
+
+# Go 1.26.8 in docker 29.9.1, docker-buildx 0.38.0 and docker-compose 5.6.0 of the docker:29-cli image (2026-10-16), in terraform 1.16.6, and in pebble of Ubuntu 26.04
+# compose 5.6.1 is built with Go 1.26.10 and buildx 0.38.1 is out, neither in the docker image yet, and terraform has no release on a newer Go (2026-10-21)
+CVE-2026-111943 exp:2026-11-04
+
+# System.Security.Cryptography.Pkcs and .Xml 10.0.10 bundled in PowerShell 7.6.7, the latest release (2026-10-13), which the .NET SDK image carries
+CVE-2026-84008 exp:2026-11-14
+CVE-2026-96958 exp:2026-11-14
+CVE-2026-96959 exp:2026-11-14
+CVE-2026-96960 exp:2026-11-14

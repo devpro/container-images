@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   REGISTRY: ghcr.io/devpro
-  IMAGES: debian-node debian-node-playwright ubuntu-dotnet ubuntu-dotnet-playwright
+  IMAGES: alpine-node debian-node debian-node-playwright ubuntu-dotnet ubuntu-dotnet-playwright
 
 tasks:
 
@@ -11,7 +11,7 @@ tasks:
       - task --list
 
   build:
-    desc: Build the development environment images
+    desc: Build the development environment and application base images
     cmds:
       - for: {var: IMAGES}
         cmd: docker build -t {{.REGISTRY}}/{{.ITEM}}:latest src/{{.ITEM}}

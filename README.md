@@ -12,6 +12,10 @@ Container images for multiple use cases.
 * [JavaScript and Playwright (Debian)](src/debian-node-playwright/README.md)
 * [.NET and Playwright (Ubuntu)](src/ubuntu-dotnet-playwright/README.md)
 
+## Application bases
+
+* [JavaScript (Alpine)](src/alpine-node/README.md)
+
 ## Demonstrations
 
 * [Cow demo](src/cow-demo/README.md)
