@@ -20,7 +20,7 @@ jobs:
         image-name:
           - debian-node
           - ubuntu-dotnet
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -29,7 +29,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
+      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -41,7 +41,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -51,7 +51,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
+      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -73,7 +73,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 35750e9d1a21724d3a7e028ee9bc6da02dcb5afb
+      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # TODO: secure first
       # - name: Login to container registry
       #   uses: docker/login-action@v3
