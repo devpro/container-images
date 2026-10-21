@@ -27,6 +27,7 @@ jobs:
       matrix:
         # A Playwright image is scanned on the base this commit builds, not on the one last published.
         include:
+          - image-name: alpine-node
           - image-name: debian-node
           - image-name: debian-node-playwright
             base-image-definition: src/debian-node/Dockerfile
