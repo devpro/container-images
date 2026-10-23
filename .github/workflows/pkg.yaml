@@ -21,7 +21,7 @@ jobs:
           - alpine-node
           - debian-node
           - ubuntu-dotnet
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -30,7 +30,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -52,7 +52,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -64,7 +64,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -74,51 +74,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # TODO: secure first
-      # - name: Login to container registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ${{ env.CONTAINER_REGITRY_DOMAIN }}
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # - name: Build container images
-      #   run: |
-      #     cd src/game-2048
-      #     docker build . --tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
-      #     cd ../cow-demo
-      #     docker build . --tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
-      #     cd ../rancher-helloworld
-      #     docker build . --tag $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
-      #     cd ../redirect-server
-      #     docker build . --tag $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
-      # - name: Push image to container registry
-      #   run: |
-      #     docker push $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
-      #     docker push $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
-      #     docker push $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
-      #     docker push $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
-      # - name: Push latest tag to container registry
-      #   if: ${{ github.ref_name == 'main' }}
-      #   run: |
-      #     docker tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/game-2048:latest
-      #     docker push $IMAGE_FOLDER/game-2048:latest
-      #     docker tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/cow-demo:latest
-      #     docker push $IMAGE_FOLDER/cow-demo:latest
-      #     docker tag $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/rancher-helloworld:latest
-      #     docker push $IMAGE_FOLDER/rancher-helloworld:latest
-      #     docker tag $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/redirect-server:latest
-      #     docker push $IMAGE_FOLDER/redirect-server:latest
-    # env:
-    #   CONTAINER_REGITRY_DOMAIN: docker.io
-    #   IMAGE_FOLDER: ${{ vars.DOCKERHUB_NAMESPACE }}
-    #   IMAGE_TAG: 1.0.${GITHUB_RUN_ID}
