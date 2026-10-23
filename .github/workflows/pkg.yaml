@@ -6,21 +6,67 @@ on:
   # A weekly rebuild takes in the base images and the packages published since, which a repository changing rarely would otherwise never get.
   schedule:
     - cron: "23 5 * * 1"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      images:
+        description: Images to publish, separated by commas, every image when empty
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
 
 jobs:
+  select:
+    name: Select the images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      runner-images: ${{ steps.select.outputs.runner-images }}
+      demo-images: ${{ steps.select.outputs.demo-images }}
+      debian-node-playwright: ${{ steps.select.outputs.debian-node-playwright }}
+      ubuntu-dotnet-playwright: ${{ steps.select.outputs.ubuntu-dotnet-playwright }}
+    steps:
+      - name: Select the images to publish
+        id: select
+        env:
+          IMAGES: ${{ inputs.images }}
+        run: |
+          runner='["alpine-node","debian-node","ubuntu-dotnet"]'
+          playwright='["debian-node-playwright","ubuntu-dotnet-playwright"]'
+          demo='["cow-demo","game-2048","rancher-helloworld","redirect-server"]'
+          known=$(jq -nc --argjson a "$runner" --argjson b "$playwright" --argjson c "$demo" '$a + $b + $c')
+          # A push or a scheduled run publishes every image, as does a manual run naming none.
+          if [ -z "${IMAGES// /}" ]; then
+            selected="$known"
+          else
+            selected=$(jq -nc --arg images "$IMAGES" '$images | split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(. != ""))')
+            unknown=$(jq -nc --argjson s "$selected" --argjson k "$known" '$s - $k')
+            if [ "$unknown" != "[]" ]; then
+              echo "::error::Unknown images: $unknown, known ones being $known"
+              exit 1
+            fi
+          fi
+          {
+            echo "runner-images=$(jq -nc --argjson s "$selected" --argjson l "$runner" '$l | map(select(. as $i | $s | index($i)))')"
+            echo "demo-images=$(jq -nc --argjson s "$selected" --argjson l "$demo" '$l | map(select(. as $i | $s | index($i)))')"
+            echo "debian-node-playwright=$(jq -nc --argjson s "$selected" '$s | index("debian-node-playwright") != null')"
+            echo "ubuntu-dotnet-playwright=$(jq -nc --argjson s "$selected" '$s | index("ubuntu-dotnet-playwright") != null')"
+          } >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
   runner-image-publication:
     name: "Image ${{ matrix.image-name }}"
+    needs: select
+    if: needs.select.outputs.runner-images != '[]'
     permissions:
       contents: read
       id-token: write
       packages: write
     strategy:
       matrix:
-        image-name:
-          - alpine-node
-          - debian-node
-          - ubuntu-dotnet
+        image-name: ${{ fromJSON(needs.select.outputs.runner-images) }}
     uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
@@ -37,7 +83,9 @@ jobs:
 
   runner-image-publication-playwright:
     name: "Image debian-node-playwright"
-    needs: runner-image-publication
+    needs: [select, runner-image-publication]
+    # Also when no base image was published in this run, whose job is then skipped, but not when its publication failed.
+    if: ${{ !cancelled() && needs.select.outputs.debian-node-playwright == 'true' && needs.runner-image-publication.result != 'failure' }}
     permissions:
       contents: read
       id-token: write
@@ -46,7 +94,8 @@ jobs:
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
-      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:1.0.${{ github.run_id }}
+      # On the base published in this run when it was selected too, on its latest tag otherwise.
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:${{ contains(needs.select.outputs.runner-images, '"debian-node"') && format('1.0.{0}', github.run_id) || 'latest' }}
       image-definition: src/debian-node-playwright/Dockerfile
       image-name: debian-node-playwright
       image-path: ghcr.io/${{ github.repository_owner }}
@@ -59,7 +108,9 @@ jobs:
 
   runner-image-publication-dotnet-playwright:
     name: "Image ubuntu-dotnet-playwright"
-    needs: runner-image-publication
+    needs: [select, runner-image-publication]
+    # Also when no base image was published in this run, whose job is then skipped, but not when its publication failed.
+    if: ${{ !cancelled() && needs.select.outputs.ubuntu-dotnet-playwright == 'true' && needs.runner-image-publication.result != 'failure' }}
     permissions:
       contents: read
       id-token: write
@@ -68,7 +119,8 @@ jobs:
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
-      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ubuntu-dotnet:1.0.${{ github.run_id }}
+      # On the base published in this run when it was selected too, on its latest tag otherwise.
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ubuntu-dotnet:${{ contains(needs.select.outputs.runner-images, '"ubuntu-dotnet"') && format('1.0.{0}', github.run_id) || 'latest' }}
       image-definition: src/ubuntu-dotnet-playwright/Dockerfile
       image-name: ubuntu-dotnet-playwright
       image-path: ghcr.io/${{ github.repository_owner }}
@@ -78,3 +130,29 @@ jobs:
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+
+  # The demo images used in talks and workshops, built from their own folder, on Docker Hub where their charts pull them.
+  demo-image-publication:
+    name: "Image ${{ matrix.image-name }}"
+    needs: select
+    if: needs.select.outputs.demo-images != '[]'
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        image-name: ${{ fromJSON(needs.select.outputs.demo-images) }}
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+    with:
+      container-registry: docker.io
+      create-latest: ${{ github.ref_name == 'main' }}
+      image-definition: Dockerfile
+      image-name: ${{ matrix.image-name }}
+      image-path: docker.io/devprofr
+      image-tag: "1.0.${{ github.run_id }}"
+      image-platform: linux/amd64
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+      working-directory: src/${{ matrix.image-name }}
+    secrets:
+      container-registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      container-registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
