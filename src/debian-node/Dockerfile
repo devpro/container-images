@@ -5,7 +5,7 @@ ARG NODE_VERSION=24
 ARG NPM_VERSION=12.2.1
 ARG PNPM_VERSION=12
 ARG DOCKER_VERSION=29
-ARG TERRAFORM_VERSION=1.16
+ARG TERRAFORM_VERSION=1.17
 
 # Binaries are taken from official images rather than third party apt repositories, so no repository key or package cache lands in a layer.
 FROM docker:${DOCKER_VERSION}-cli AS docker

@@ -6,22 +6,68 @@ on:
   # A weekly rebuild takes in the base images and the packages published since, which a repository changing rarely would otherwise never get.
   schedule:
     - cron: "23 5 * * 1"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      images:
+        description: Images to publish, separated by commas, every image when empty
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
 
 jobs:
+  select:
+    name: Select the images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      runner-images: ${{ steps.select.outputs.runner-images }}
+      demo-images: ${{ steps.select.outputs.demo-images }}
+      debian-node-playwright: ${{ steps.select.outputs.debian-node-playwright }}
+      ubuntu-dotnet-playwright: ${{ steps.select.outputs.ubuntu-dotnet-playwright }}
+    steps:
+      - name: Select the images to publish
+        id: select
+        env:
+          IMAGES: ${{ inputs.images }}
+        run: |
+          runner='["alpine-node","debian-node","ubuntu-dotnet"]'
+          playwright='["debian-node-playwright","ubuntu-dotnet-playwright"]'
+          demo='["cow-demo","game-2048","rancher-helloworld","redirect-server"]'
+          known=$(jq -nc --argjson a "$runner" --argjson b "$playwright" --argjson c "$demo" '$a + $b + $c')
+          # A push or a scheduled run publishes every image, as does a manual run naming none.
+          if [ -z "${IMAGES// /}" ]; then
+            selected="$known"
+          else
+            selected=$(jq -nc --arg images "$IMAGES" '$images | split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(. != ""))')
+            unknown=$(jq -nc --argjson s "$selected" --argjson k "$known" '$s - $k')
+            if [ "$unknown" != "[]" ]; then
+              echo "::error::Unknown images: $unknown, known ones being $known"
+              exit 1
+            fi
+          fi
+          {
+            echo "runner-images=$(jq -nc --argjson s "$selected" --argjson l "$runner" '$l | map(select(. as $i | $s | index($i)))')"
+            echo "demo-images=$(jq -nc --argjson s "$selected" --argjson l "$demo" '$l | map(select(. as $i | $s | index($i)))')"
+            echo "debian-node-playwright=$(jq -nc --argjson s "$selected" '$s | index("debian-node-playwright") != null')"
+            echo "ubuntu-dotnet-playwright=$(jq -nc --argjson s "$selected" '$s | index("ubuntu-dotnet-playwright") != null')"
+          } >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
   runner-image-publication:
     name: "Image ${{ matrix.image-name }}"
+    needs: select
+    if: needs.select.outputs.runner-images != '[]'
     permissions:
       contents: read
       id-token: write
       packages: write
     strategy:
       matrix:
-        image-name:
-          - alpine-node
-          - debian-node
-          - ubuntu-dotnet
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
+        image-name: ${{ fromJSON(needs.select.outputs.runner-images) }}
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -30,95 +76,83 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
   runner-image-publication-playwright:
     name: "Image debian-node-playwright"
-    needs: runner-image-publication
+    needs: [select, runner-image-publication]
+    # Also when no base image was published in this run, whose job is then skipped, but not when its publication failed.
+    if: ${{ !cancelled() && needs.select.outputs.debian-node-playwright == 'true' && needs.runner-image-publication.result != 'failure' }}
     permissions:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
-      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:1.0.${{ github.run_id }}
+      # On the base published in this run when it was selected too, on its latest tag otherwise.
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:${{ contains(needs.select.outputs.runner-images, '"debian-node"') && format('1.0.{0}', github.run_id) || 'latest' }}
       image-definition: src/debian-node-playwright/Dockerfile
       image-name: debian-node-playwright
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
   runner-image-publication-dotnet-playwright:
     name: "Image ubuntu-dotnet-playwright"
-    needs: runner-image-publication
+    needs: [select, runner-image-publication]
+    # Also when no base image was published in this run, whose job is then skipped, but not when its publication failed.
+    if: ${{ !cancelled() && needs.select.outputs.ubuntu-dotnet-playwright == 'true' && needs.runner-image-publication.result != 'failure' }}
     permissions:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@943c8ad7e62e471283fcbc60823cf9128af2c520
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
-      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ubuntu-dotnet:1.0.${{ github.run_id }}
+      # On the base published in this run when it was selected too, on its latest tag otherwise.
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ubuntu-dotnet:${{ contains(needs.select.outputs.runner-images, '"ubuntu-dotnet"') && format('1.0.{0}', github.run_id) || 'latest' }}
       image-definition: src/ubuntu-dotnet-playwright/Dockerfile
       image-name: ubuntu-dotnet-playwright
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 943c8ad7e62e471283fcbc60823cf9128af2c520
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # TODO: secure first
-      # - name: Login to container registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ${{ env.CONTAINER_REGITRY_DOMAIN }}
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # - name: Build container images
-      #   run: |
-      #     cd src/game-2048
-      #     docker build . --tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
-      #     cd ../cow-demo
-      #     docker build . --tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
-      #     cd ../rancher-helloworld
-      #     docker build . --tag $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
-      #     cd ../redirect-server
-      #     docker build . --tag $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
-      # - name: Push image to container registry
-      #   run: |
-      #     docker push $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }}
-      #     docker push $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }}
-      #     docker push $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }}
-      #     docker push $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }}
-      # - name: Push latest tag to container registry
-      #   if: ${{ github.ref_name == 'main' }}
-      #   run: |
-      #     docker tag $IMAGE_FOLDER/game-2048:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/game-2048:latest
-      #     docker push $IMAGE_FOLDER/game-2048:latest
-      #     docker tag $IMAGE_FOLDER/cow-demo:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/cow-demo:latest
-      #     docker push $IMAGE_FOLDER/cow-demo:latest
-      #     docker tag $IMAGE_FOLDER/rancher-helloworld:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/rancher-helloworld:latest
-      #     docker push $IMAGE_FOLDER/rancher-helloworld:latest
-      #     docker tag $IMAGE_FOLDER/redirect-server:${{ env.IMAGE_TAG }} $IMAGE_FOLDER/redirect-server:latest
-      #     docker push $IMAGE_FOLDER/redirect-server:latest
-    # env:
-    #   CONTAINER_REGITRY_DOMAIN: docker.io
-    #   IMAGE_FOLDER: ${{ vars.DOCKERHUB_NAMESPACE }}
-    #   IMAGE_TAG: 1.0.${GITHUB_RUN_ID}
+  # The demo images used in talks and workshops, built from their own folder, on Docker Hub where their charts pull them.
+  demo-image-publication:
+    name: "Image ${{ matrix.image-name }}"
+    needs: select
+    if: needs.select.outputs.demo-images != '[]'
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        image-name: ${{ fromJSON(needs.select.outputs.demo-images) }}
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+    with:
+      container-registry: docker.io
+      create-latest: ${{ github.ref_name == 'main' }}
+      image-definition: Dockerfile
+      image-name: ${{ matrix.image-name }}
+      image-path: docker.io/devprofr
+      image-tag: "1.0.${{ github.run_id }}"
+      image-platform: linux/amd64
+      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+      working-directory: src/${{ matrix.image-name }}
+    secrets:
+      container-registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      container-registry-password: ${{ secrets.DOCKERHUB_TOKEN }}

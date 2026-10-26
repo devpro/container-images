@@ -1,4 +1,4 @@
-FROM registry.suse.com/bci/python:3.13
+FROM registry.suse.com/bci/python:3.14
 
 WORKDIR /app
 
@@ -8,4 +8,4 @@ EXPOSE 8080
 
 ENV REDIRECT_URL=http://default.url
 
-CMD ["python3", "redirect_server.py"]
+CMD ["python3", "main.py"]
