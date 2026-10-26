@@ -19,7 +19,7 @@ permissions:
 jobs:
   content-validate:
     name: Markup
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@591b0c7bfba6fbc7b0cab7d896447e0732b819de
 
   runner-image-scan:
     name: "Image ${{ matrix.image-name }}"
@@ -34,14 +34,14 @@ jobs:
           - image-name: ubuntu-dotnet
           - image-name: ubuntu-dotnet-playwright
             base-image-definition: src/ubuntu-dotnet/Dockerfile
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@591b0c7bfba6fbc7b0cab7d896447e0732b819de
     with:
       base-image-definition: ${{ matrix.base-image-definition || '' }}
       image-definition: src/${{ matrix.image-name }}/Dockerfile
       image-name: ${{ matrix.image-name }}
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
-      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+      workflow-parts-version: 591b0c7bfba6fbc7b0cab7d896447e0732b819de
 
   # The demo images used in talks and workshops, each built from its own folder.
   demo-image-scan:
@@ -49,11 +49,11 @@ jobs:
     strategy:
       matrix:
         image-name: [cow-demo, game-2048, rancher-helloworld, redirect-server]
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@591b0c7bfba6fbc7b0cab7d896447e0732b819de
     with:
       image-definition: Dockerfile
       image-name: ${{ matrix.image-name }}
       image-path: docker.io/devprofr
       image-tag: "1.0.${{ github.run_id }}"
-      workflow-parts-version: 13ac7ccf4ba593797f8c80a75f2559ce0fc2d09e
+      workflow-parts-version: 591b0c7bfba6fbc7b0cab7d896447e0732b819de
       working-directory: src/${{ matrix.image-name }}
