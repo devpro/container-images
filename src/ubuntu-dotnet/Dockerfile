@@ -4,7 +4,7 @@
 ARG DOTNET_VERSION=10.0
 # The plain SDK tag leaves the distribution to Microsoft, so the Ubuntu release is named to match the one ubuntu-latest runs.
 ARG UBUNTU_CODENAME=resolute
-ARG TERRAFORM_VERSION=1.16
+ARG TERRAFORM_VERSION=1.17
 
 # Binaries are taken from official images rather than third party apt repositories, so no repository key or package cache lands in a layer.
 FROM hashicorp/terraform:${TERRAFORM_VERSION} AS terraform
