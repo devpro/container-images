@@ -67,7 +67,7 @@ jobs:
     strategy:
       matrix:
         image-name: ${{ fromJSON(needs.select.outputs.runner-images) }}
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@bf95c99bf5b5a0bc2d2991c81975488a16f16142
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -76,7 +76,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       arm64-runner: ubuntu-26.04-arm
-      workflow-parts-version: bf95c99bf5b5a0bc2d2991c81975488a16f16142
+      workflow-parts-version: 1711cf6d760e89fe43e3673dbd8986e355876cca
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@bf95c99bf5b5a0bc2d2991c81975488a16f16142
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -99,7 +99,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       arm64-runner: ubuntu-26.04-arm
-      workflow-parts-version: bf95c99bf5b5a0bc2d2991c81975488a16f16142
+      workflow-parts-version: 1711cf6d760e89fe43e3673dbd8986e355876cca
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -112,7 +112,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@bf95c99bf5b5a0bc2d2991c81975488a16f16142
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -122,7 +122,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       arm64-runner: ubuntu-26.04-arm
-      workflow-parts-version: bf95c99bf5b5a0bc2d2991c81975488a16f16142
+      workflow-parts-version: 1711cf6d760e89fe43e3673dbd8986e355876cca
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -137,7 +137,7 @@ jobs:
     strategy:
       matrix:
         image-name: ${{ fromJSON(needs.select.outputs.demo-images) }}
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@bf95c99bf5b5a0bc2d2991c81975488a16f16142
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
     with:
       container-registry: docker.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -146,7 +146,7 @@ jobs:
       image-path: docker.io/devprofr
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: bf95c99bf5b5a0bc2d2991c81975488a16f16142
+      workflow-parts-version: 1711cf6d760e89fe43e3673dbd8986e355876cca
       working-directory: src/${{ matrix.image-name }}
     secrets:
       container-registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
