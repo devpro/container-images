@@ -19,7 +19,7 @@ permissions:
 jobs:
   markup-lint:
     name: Markup
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-markup-lint.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
 
   runner-image-scan:
     name: "Image ${{ matrix.image-name }}"
@@ -33,25 +33,25 @@ jobs:
           - image-name: ubuntu-dotnet
           - image-name: ubuntu-dotnet-playwright
             base-image-definition: src/ubuntu-dotnet/Dockerfile
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
     with:
       base-image-definition: ${{ matrix.base-image-definition || '' }}
       image-definition: src/${{ matrix.image-name }}/Dockerfile
       image-name: ${{ matrix.image-name }}
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
-      workflow-parts-version: 1711cf6d760e89fe43e3673dbd8986e355876cca
+      workflow-parts-version: 8c856cd16adc8a0ca01c7889a9c7d98ad8593818
 
   demo-image-scan:
     name: "Image ${{ matrix.image-name }}"
     strategy:
       matrix:
         image-name: [cow-demo, game-2048, rancher-helloworld, redirect-server]
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@1711cf6d760e89fe43e3673dbd8986e355876cca
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-scan.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
     with:
       image-definition: Dockerfile
       image-name: ${{ matrix.image-name }}
       image-path: docker.io/devprofr
       image-tag: "1.0.${{ github.run_id }}"
-      workflow-parts-version: 1711cf6d760e89fe43e3673dbd8986e355876cca
+      workflow-parts-version: 8c856cd16adc8a0ca01c7889a9c7d98ad8593818
       working-directory: src/${{ matrix.image-name }}
