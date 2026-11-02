@@ -1,6 +1,6 @@
 # Node.js environment: markup lint, build, unit and end to end tests, Terraform quality.
 
-ARG NODE_VERSION=24
+ARG NODE_VERSION=26
 # npm's latest tag stays behind its releases at times, so the release carrying the fixes of its bundled dependencies is named.
 ARG NPM_VERSION=12.2.1
 ARG PNPM_VERSION=12

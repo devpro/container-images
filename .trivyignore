@@ -8,5 +8,10 @@ CVE-2026-17106
 # The entry expires on its own, so that a release built with x/net 0.60 is looked for again.
 CVE-2026-78669 exp:2026-11-12
 
-# undici 6.29.0 bundled in npm 12.2.1, the latest release (2026-10-26)
+# undici 6.29.0 bundled in npm 12.2.1, the latest release (2026-10-28)
 CVE-2026-109869 exp:2026-11-09
+CVE-2026-109383 exp:2026-11-09
+CVE-2026-87018 exp:2026-11-09
+
+# go-jose v4.1.4 in Terraform 1.17.0 and 1.16.7, the latest releases (2026-10-28), whose main branch still requires it
+CVE-2026-116587 exp:2026-11-11

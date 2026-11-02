@@ -4,7 +4,7 @@ Node.js base for application images, in place of the official `node` image whose
 
 ## Content
 
-- Node.js 24 on Alpine (`node:24-alpine3.24`), with its Alpine packages upgraded
+- Node.js 26 on Alpine (`node:26-alpine3.24`), with its Alpine packages upgraded
 - npm 12
 
 The user is root, as in the official image, and `node` (uid 1000) is there for the stage running the application.
