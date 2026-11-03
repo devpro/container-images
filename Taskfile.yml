@@ -16,6 +16,30 @@ tasks:
       - for: {var: IMAGES}
         cmd: docker build -t {{.REGISTRY}}/{{.ITEM}}:latest src/{{.ITEM}}
 
+  build:fresh:
+    desc: Build the images again from the latest base images and packages, to take the security fixes published since
+    cmds:
+      # The cache would replay the package upgrade layer as it was, so the fixes published since would never be installed.
+      # A playwright image builds on the local image just built, which a pull would replace with the published one.
+      # Only the images the builds replaced are removed, never every dangling one, which would take other projects' images with it.
+      # A replaced playwright image still holds its replaced base, so the removals run in the reverse order of the builds.
+      # A removal Docker refuses (a container still runs on the image) leaves the image and the build stands.
+      - |
+        set -e
+        replaced=""
+        for image in {{.IMAGES}}; do
+          ref="{{.REGISTRY}}/$image:latest"
+          old=$(docker images -q --no-trunc "$ref")
+          case "$image" in *playwright*) pull="" ;; *) pull="--pull" ;; esac
+          docker build --no-cache $pull -t "$ref" "src/$image"
+          if [ -n "$old" ] && [ "$old" != "$(docker images -q --no-trunc "$ref")" ]; then
+            replaced="$old $replaced"
+          fi
+        done
+        for old in $replaced; do
+          docker image rm "$old" >/dev/null && echo "🧹 removed the replaced image ${old#sha256:}" || echo "⚠️ kept the replaced image ${old#sha256:}"
+        done
+
   ci:setup:
     desc: Register the repository with the IstarCI daemon and gate git push on its runs
     cmds:
