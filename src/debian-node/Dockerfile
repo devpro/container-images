@@ -2,7 +2,7 @@
 
 ARG NODE_VERSION=26
 # npm's latest tag stays behind its releases at times, so the release carrying the fixes of its bundled dependencies is named.
-ARG NPM_VERSION=12.2.1
+ARG NPM_VERSION=12.2.2
 ARG PNPM_VERSION=12
 ARG DOCKER_VERSION=29
 ARG TERRAFORM_VERSION=1.17
