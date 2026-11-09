@@ -7,3 +7,6 @@ CVE-2026-17106
 # golang.org/x/net 0.58 to 0.59 in docker-buildx and docker-compose of the docker:29-cli image, the latest releases on 2026-10-26
 # The entry expires on its own, so that a release built with x/net 0.60 is looked for again.
 CVE-2026-78669 exp:2026-11-12
+
+# golang.org/x/net 0.59.0 in docker-buildx 0.38.2 and 0.60.0 in docker-compose 5.7.0, the latest releases (checked 2026-11-09), fixed in 0.62.0
+CVE-2026-78661 exp:2026-11-16
