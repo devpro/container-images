@@ -1,9 +1,9 @@
 # IstarCI configuration, read from the root of the repository.
 
 runner:
-  image: ghcr.io/devpro/debian-node:latest
-  # The scan jobs build an image and scan it through the host Docker daemon.
-  docker: ["runner-image-scan*", "demo-image-scan*"]
+  image: ghcr.io/devpro/ubuntu-node:latest
+  # The scan jobs build an image and scan it through the host Docker daemon, and the parity check builds one and runs it.
+  docker: ["runner-image-scan*", "demo-image-scan*", "runner-parity*"]
 
 workflow:
   onDisallowedAction: fail

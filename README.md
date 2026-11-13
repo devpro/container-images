@@ -7,10 +7,12 @@ Container images for multiple use cases.
 
 ## Development environments
 
-* [JavaScript (Debian)](src/debian-node/README.md)
+* [JavaScript (Ubuntu)](src/ubuntu-node/README.md)
 * [.NET (Ubuntu)](src/ubuntu-dotnet/README.md)
-* [JavaScript and Playwright (Debian)](src/debian-node-playwright/README.md)
+* [JavaScript and Playwright (Ubuntu)](src/ubuntu-node-playwright/README.md)
 * [.NET and Playwright (Ubuntu)](src/ubuntu-dotnet-playwright/README.md)
+
+They run on the Ubuntu release of `ubuntu-latest`, so a script behaves in a local run as on a GitHub hosted runner.
 
 ## Application bases
 

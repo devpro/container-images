@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - main
+  # A new ubuntu-latest reaches the parity check without waiting for a push.
+  schedule:
+    - cron: "41 4 * * 1"
   workflow_dispatch: {}
 
 concurrency:
@@ -27,9 +30,9 @@ jobs:
       matrix:
         include:
           - image-name: alpine-node
-          - image-name: debian-node
-          - image-name: debian-node-playwright
-            base-image-definition: src/debian-node/Dockerfile
+          - image-name: ubuntu-node
+          - image-name: ubuntu-node-playwright
+            base-image-definition: src/ubuntu-node/Dockerfile
           - image-name: ubuntu-dotnet
           - image-name: ubuntu-dotnet-playwright
             base-image-definition: src/ubuntu-dotnet/Dockerfile
@@ -41,6 +44,22 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       workflow-parts-version: 5379b9d0052e3b233ec2e56ba8678e827361b89e
+
+  # The Node images exist to fail locally what ubuntu-latest fails, so they are held to the userland of the runner this job runs on.
+  # The Playwright image adds libraries on top, never a tool a script calls, so the base is the one compared.
+  runner-parity:
+    name: Runner parity ubuntu-node
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build the image
+        run: docker build --pull --tag ubuntu-node:parity src/ubuntu-node
+      - name: Compare the image with the runner
+        run: scripts/check_runner_parity.sh ubuntu-node:parity
 
   demo-image-scan:
     name: "Image ${{ matrix.image-name }}"
