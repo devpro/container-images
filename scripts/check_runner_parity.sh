@@ -10,27 +10,25 @@ set -euo pipefail
 
 image="${1:?Usage: $0 <image>}"
 
-# Prints one "tool=implementation" line per tool, run as is on both sides.
-probe='
-first_line() { "$@" 2>&1 | head -n 1; }
-# The implementation is what --version names in parentheses, "GNU coreutils" or "uutils coreutils".
-implementation() { first_line "$1" --version | sed -n "s/^[^(]*(\([^)]*\)).*/\1/p"; }
-# Ubuntu 26.04 mixes uutils and GNU within coreutils, so each command a script commonly calls is named.
-for c in basename cat chmod cp cut date dirname env head ls mkdir mktemp mv readlink realpath rm sha256sum sort tail tee touch tr uniq wc; do
-  echo "$c=$(implementation "$c")"
-done
-for c in find xargs sed grep diff tar; do
-  echo "$c=$(implementation "$c")"
-done
-echo "sh=$(basename "$(readlink -f /bin/sh)")"
-echo "awk=$(basename "$(readlink -f "$(command -v awk)")")"
-echo "bash=$(bash -c "echo \${BASH_VERSINFO[0]}.\${BASH_VERSINFO[1]}")"
-# A job asking for a Node.js major gets it from the runner tools cache, while a container job runs the one of the image.
-echo "node=$(node --version 2>/dev/null | sed "s/^v\([0-9]*\).*/\1/")"
-'
+# Prints one "tool=implementation" line per tool.
+# It is a function so that its text, given by declare -f, runs as is on both sides, the image's bash expanding it rather than the runner's.
+probe() {
+  local c
+  # Ubuntu 26.04 mixes uutils and GNU within coreutils, so each command a script commonly calls is named.
+  for c in basename cat chmod cp cut date dirname env head ls mkdir mktemp mv readlink realpath rm sha256sum sort tail tee touch tr uniq wc \
+    find xargs sed grep diff tar; do
+    # The implementation is what --version names in parentheses, "GNU coreutils" or "uutils coreutils".
+    echo "$c=$("$c" --version 2>&1 | head -n 1 | sed -n 's/^[^(]*(\([^)]*\)).*/\1/p')"
+  done
+  echo "sh=$(basename "$(readlink -f /bin/sh)")"
+  echo "awk=$(basename "$(readlink -f "$(command -v awk)")")"
+  echo "bash=${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}"
+  # A job asking for a Node.js major gets it from the runner tools cache, while a container job runs the one of the image.
+  echo "node=$(node --version 2>/dev/null | sed 's/^v\([0-9]*\).*/\1/')"
+}
 
-runner=$(bash -c "$probe")
-in_image=$(docker run --rm --entrypoint bash "$image" -c "$probe")
+runner=$(probe)
+in_image=$(docker run --rm --entrypoint bash "$image" -c "$(declare -f probe); probe")
 
 echo "git on the runner: $(git --version), in the image: $(docker run --rm --entrypoint git "$image" --version)"
 
