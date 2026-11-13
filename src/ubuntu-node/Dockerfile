@@ -23,11 +23,12 @@ ARG PNPM_VERSION
 # pipx backs `pipx run yamllint` and `pipx run checkov`, git is what every checkout and change detection step calls, and jq is what scripts read JSON with, as on a hosted runner.
 # curl and unzip are what the Syft, Trivy, Terraform and TFLint composite actions download their pinned release with, and zip is what tests packing an archive call.
 # g++ and make build the native modules an npm install compiles when no prebuilt binary matches, as on a hosted runner.
+# gawk is the awk of a hosted runner, taking over from the mawk of the Ubuntu base through a higher alternatives priority, so an awk script meets the same dialect.
 # libatomic1 is the one library Node links against that the Ubuntu base lacks.
 # The Ubuntu image is rebuilt less often than Ubuntu publishes security fixes, which an image scan reports.
 RUN apt-get update \
   && apt-get upgrade -y \
-  && apt-get install -y --no-install-recommends ca-certificates curl g++ git jq libatomic1 make pipx unzip zip \
+  && apt-get install -y --no-install-recommends ca-certificates curl g++ gawk git jq libatomic1 make pipx unzip zip \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=node /usr/local/bin/node /usr/local/bin/node

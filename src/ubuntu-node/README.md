@@ -4,7 +4,7 @@ Node.js environment for building, testing and linting, in a CI job or on a works
 
 ## Content
 
-- Ubuntu 26.04, the release `ubuntu-latest` runs, with its uutils coreutils, dash, bash 5.3, GNU sed, grep and findutils, mawk
+- Ubuntu 26.04, the release `ubuntu-latest` runs, with its uutils coreutils, dash, bash 5.3, GNU sed, grep and findutils, and gawk as a hosted runner has
 - Node.js 24, the default of `ubuntu-latest`, npm 12, pnpm 12
 - g++, make, git, curl, jq, zip, unzip, pipx (for `pipx run yamllint` and `pipx run checkov`)
 - Docker client, buildx and compose, to reach a Docker daemon through its socket
