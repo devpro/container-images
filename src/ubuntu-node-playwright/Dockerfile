@@ -1,6 +1,6 @@
-# Node.js environment for browser tests with Playwright: debian-node with the system libraries Chromium needs.
+# Node.js environment for browser tests with Playwright: ubuntu-node with the system libraries Chromium needs.
 
-ARG BASE_IMAGE=ghcr.io/devpro/debian-node:latest
+ARG BASE_IMAGE=ghcr.io/devpro/ubuntu-node:latest
 ARG PLAYWRIGHT_VERSION=1
 
 FROM ${BASE_IMAGE}

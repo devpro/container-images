@@ -25,7 +25,8 @@ jobs:
     outputs:
       runner-images: ${{ steps.select.outputs.runner-images }}
       demo-images: ${{ steps.select.outputs.demo-images }}
-      debian-node-playwright: ${{ steps.select.outputs.debian-node-playwright }}
+      ubuntu-node: ${{ steps.select.outputs.ubuntu-node }}
+      ubuntu-node-playwright: ${{ steps.select.outputs.ubuntu-node-playwright }}
       ubuntu-dotnet-playwright: ${{ steps.select.outputs.ubuntu-dotnet-playwright }}
     steps:
       - name: Select the images to publish
@@ -33,10 +34,11 @@ jobs:
         env:
           IMAGES: ${{ inputs.images }}
         run: |
-          runner='["alpine-node","debian-node","ubuntu-dotnet"]'
-          playwright='["debian-node-playwright","ubuntu-dotnet-playwright"]'
+          runner='["alpine-node","ubuntu-dotnet"]'
+          # Images built on another one, or once per Node.js major, have jobs of their own.
+          own='["ubuntu-node","ubuntu-node-playwright","ubuntu-dotnet-playwright"]'
           demo='["cow-demo","game-2048","rancher-helloworld","redirect-server"]'
-          known=$(jq -nc --argjson a "$runner" --argjson b "$playwright" --argjson c "$demo" '$a + $b + $c')
+          known=$(jq -nc --argjson a "$runner" --argjson b "$own" --argjson c "$demo" '$a + $b + $c')
           # A push or a scheduled run publishes every image, as does a manual run naming none.
           if [ -z "${IMAGES// /}" ]; then
             selected="$known"
@@ -51,7 +53,8 @@ jobs:
           {
             echo "runner-images=$(jq -nc --argjson s "$selected" --argjson l "$runner" '$l | map(select(. as $i | $s | index($i)))')"
             echo "demo-images=$(jq -nc --argjson s "$selected" --argjson l "$demo" '$l | map(select(. as $i | $s | index($i)))')"
-            echo "debian-node-playwright=$(jq -nc --argjson s "$selected" '$s | index("debian-node-playwright") != null')"
+            echo "ubuntu-node=$(jq -nc --argjson s "$selected" '$s | index("ubuntu-node") != null')"
+            echo "ubuntu-node-playwright=$(jq -nc --argjson s "$selected" '$s | index("ubuntu-node-playwright") != null')"
             echo "ubuntu-dotnet-playwright=$(jq -nc --argjson s "$selected" '$s | index("ubuntu-dotnet-playwright") != null')"
           } >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
@@ -67,7 +70,7 @@ jobs:
     strategy:
       matrix:
         image-name: ${{ fromJSON(needs.select.outputs.runner-images) }}
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@5379b9d0052e3b233ec2e56ba8678e827361b89e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -76,30 +79,63 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       arm64-runner: ubuntu-26.04-arm
-      workflow-parts-version: 8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+      workflow-parts-version: 5379b9d0052e3b233ec2e56ba8678e827361b89e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
-  runner-image-publication-playwright:
-    name: "Image debian-node-playwright"
-    needs: [select, runner-image-publication]
-    if: ${{ !cancelled() && needs.select.outputs.debian-node-playwright == 'true' && needs.runner-image-publication.result != 'failure' }}
+  # One image per Node.js major of the ubuntu-latest tools cache, so that IstarCI gives a job the major its actions/setup-node asks for, as GitHub does.
+  # The major is a moving tag, as latest is, and only main moves them, a run of another branch publishing under a tag of its own.
+  node-image-publication:
+    name: "Image ubuntu-node:${{ matrix.node }}"
+    needs: select
+    if: needs.select.outputs.ubuntu-node == 'true'
     permissions:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+    strategy:
+      matrix:
+        node: ["22", "24"]
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@5379b9d0052e3b233ec2e56ba8678e827361b89e
     with:
       container-registry: ghcr.io
-      create-latest: ${{ github.ref_name == 'main' }}
-      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/debian-node:${{ contains(needs.select.outputs.runner-images, '"debian-node"') && format('1.0.{0}', github.run_id) || 'latest' }}
-      image-definition: src/debian-node-playwright/Dockerfile
-      image-name: debian-node-playwright
+      # latest is the default Node.js of ubuntu-latest.
+      create-latest: ${{ github.ref_name == 'main' && matrix.node == '24' }}
+      extra-build-arguments: NODE_VERSION=${{ matrix.node }}
+      image-definition: src/ubuntu-node/Dockerfile
+      image-name: ubuntu-node
       image-path: ghcr.io/${{ github.repository_owner }}
-      image-tag: "1.0.${{ github.run_id }}"
+      image-tag: ${{ github.ref_name == 'main' && matrix.node || format('{0}-1.0.{1}', matrix.node, github.run_id) }}
       arm64-runner: ubuntu-26.04-arm
-      workflow-parts-version: 8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+      workflow-parts-version: 5379b9d0052e3b233ec2e56ba8678e827361b89e
+    secrets:
+      container-registry-username: ${{ github.actor }}
+      container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+
+  node-image-publication-playwright:
+    name: "Image ubuntu-node-playwright:${{ matrix.node }}"
+    needs: [select, node-image-publication]
+    if: ${{ !cancelled() && needs.select.outputs.ubuntu-node-playwright == 'true' && needs.node-image-publication.result != 'failure' }}
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      matrix:
+        node: ["22", "24"]
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@5379b9d0052e3b233ec2e56ba8678e827361b89e
+    with:
+      container-registry: ghcr.io
+      create-latest: ${{ github.ref_name == 'main' && matrix.node == '24' }}
+      # The base is the one this run published, or the published one of the same major when this run left it out.
+      extra-build-arguments: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ubuntu-node:${{ (needs.select.outputs.ubuntu-node == 'true' && github.ref_name != 'main') && format('{0}-1.0.{1}', matrix.node, github.run_id) || matrix.node }}
+      image-definition: src/ubuntu-node-playwright/Dockerfile
+      image-name: ubuntu-node-playwright
+      image-path: ghcr.io/${{ github.repository_owner }}
+      image-tag: ${{ github.ref_name == 'main' && matrix.node || format('{0}-1.0.{1}', matrix.node, github.run_id) }}
+      arm64-runner: ubuntu-26.04-arm
+      workflow-parts-version: 5379b9d0052e3b233ec2e56ba8678e827361b89e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -112,7 +148,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@5379b9d0052e3b233ec2e56ba8678e827361b89e
     with:
       container-registry: ghcr.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -122,7 +158,7 @@ jobs:
       image-path: ghcr.io/${{ github.repository_owner }}
       image-tag: "1.0.${{ github.run_id }}"
       arm64-runner: ubuntu-26.04-arm
-      workflow-parts-version: 8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+      workflow-parts-version: 5379b9d0052e3b233ec2e56ba8678e827361b89e
     secrets:
       container-registry-username: ${{ github.actor }}
       container-registry-password: ${{ secrets.GITHUB_TOKEN }}
@@ -137,7 +173,7 @@ jobs:
     strategy:
       matrix:
         image-name: ${{ fromJSON(needs.select.outputs.demo-images) }}
-    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+    uses: devpro/github-workflow-parts/.github/workflows/reusable-container-publication.yml@5379b9d0052e3b233ec2e56ba8678e827361b89e
     with:
       container-registry: docker.io
       create-latest: ${{ github.ref_name == 'main' }}
@@ -146,7 +182,7 @@ jobs:
       image-path: docker.io/devprofr
       image-tag: "1.0.${{ github.run_id }}"
       image-platform: linux/amd64
-      workflow-parts-version: 8c856cd16adc8a0ca01c7889a9c7d98ad8593818
+      workflow-parts-version: 5379b9d0052e3b233ec2e56ba8678e827361b89e
       working-directory: src/${{ matrix.image-name }}
     secrets:
       container-registry-username: ${{ secrets.DOCKERHUB_USERNAME }}

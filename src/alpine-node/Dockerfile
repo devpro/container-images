@@ -3,7 +3,7 @@
 ARG NODE_VERSION=26
 ARG ALPINE_VERSION=3.24
 # npm's latest tag stays behind its releases at times, so the release carrying the fixes of its bundled dependencies is named.
-ARG NPM_VERSION=12.2.1
+ARG NPM_VERSION=12.2.2
 
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
